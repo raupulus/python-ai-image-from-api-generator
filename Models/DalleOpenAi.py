@@ -3,56 +3,117 @@ import os
 import requests
 from PIL import Image
 from dotenv import load_dotenv
+from time import sleep
 
 load_dotenv()
 
+
 class DalleOpenAi:
-    def __init__(self) -> str:
-        self.image_url: str
+    # Posición actual iterando imágenes del lote
+    current_pos = 0
+
+    # Total de imágenes para el lote actual
+    current_total = 0
+
+    # Nombre del lote actual de imágenes para agruparlas por directorio
+    current_groupname = "lote"
+
+    # Ruta hacia el lote de imágenes actual
+    current_full_path = 'output/lote'
+
+    # Indica si está ocupada la instancia trabajando con la api
+    is_busy = False
+
+
+    def __init__(self, model = "davinci", debug = False) -> str:
         openai.api_key = os.getenv("API_KEY_OPENAI")
         self.APIKey = openai.api_key
-        self.name = None
+        self.model = model
+        self.DEBUG = debug
 
-    def generateImage(self, prompt, model = "image-alpha-001", quantity = 1, size = "256x256"):
+    def generate_request(self, prompt, quantity = 1, size = "256x256"):
+
         try:
-            self.APIKey
             response = openai.Image.create(
-            prompt = prompt,
-            n = quantity,
-            size = size,
+                prompt = prompt,
+                n = quantity,
+                size = size,
+                model = self.model
             )
 
-            self.image_url = response['data']
+            datas = response['data']
 
-            self.image_url = [image["url"] for image in self.image_url]
+            urls = [data["url"] for data in datas]
 
-            #print(self.image_url)
-
-            return self.image_url
+            self.download_images(urls)
         except openai.error.OpenAIError as e:
             print(e.http_status)
             print(e.error)
 
-    def downloadImage(self, names)-> None:
 
+    def generate_images(self, prompt, quantity = 1, size = "256x256", path = None):
+        while self.is_busy:
+            print("Esperando a que la API esté disponible...")
 
-        # TODO: Crear directorio si no existe
-        # TODO: Paremetrizar directorio por lote, solo puede traer 10 imágenes. Si pido 50 deberían estar en el mismo directorio
-        # TODO: Crear archivo de texto con metadatos (puede que venga en la url: .....org-al6rqfENpjdD0OdrrwOMlqhC/user-qLnfHYBAiEI91logB5tk84JF/img-4HRsztxQufYZFAxrElB3EpGr.png?st=2023-09-23T22%3A51%3A52Z&se=2023-09-24T00%3A51%3A52Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-09-23T22%3A44%3A15Z&ske=2023-09-24T22%3A44%3A15Z&sks=b&skv=2021-08-06&sig=H0evcjh1MGFKh4ZBXgcvVgHd3h1CK9rsy3XkTmNur2Y%3D)
+            sleep(5)
 
-        # TODO: Crear imágenes secuencialmente, sin espacios
+        if path is None:
+            name = os.urandom(16).hex()
+        else:
+            name = path
+
+        self.current_groupname = name
+
+        script_path = os.getcwd()
+        full_path = script_path + "/output/" + name
+
+        self.current_full_path = full_path
+
+        if os.path.exists(script_path) and not os.path.exists(full_path):
+            os.makedirs(full_path, exist_ok=True)
+
+        self.is_busy = True
+
+        self.current_pos = 0
+        self.current_total = quantity
+
+        pending_quantity = quantity
+
+        while pending_quantity >= 10:
+            pending_quantity -= 10
+            self.generate_request(prompt, quantity = 10, size = size)
+
+        if pending_quantity >= 1 and pending_quantity < 10:
+            self.generate_request(prompt, quantity = pending_quantity, size = size)
+
+        self.is_busy = False
+
+    def download_images(self, urls)-> None:
+        """
+        Args:
+            urls (dic): Urls con la ruta a las imágenes
+        """
+
+        full_path = self.current_full_path
+        name = self.current_groupname
 
         try:
-            self.name = names
-
-            for url in self.image_url:
+            for url in urls:
                 image = requests.get(url)
+                image_name = str(self.current_pos) + ".png"
+                self.current_pos += 1
 
-            for name in self.name:
-                #with open("output/loteN/{}.png".format(name), "wb") as f:
-                with open("output/{}.png".format(name), "wb") as f:
+                if self.DEBUG:
+                    print("")
+                    print("Downloading image: " + image_name)
+                    print("Total: " + str(self.current_total))
+                    print("Pos: " + str(self.current_pos))
+                    print("Group: " + name)
+                    print("Path: " + full_path)
+
+                with open(full_path + "/" + image_name, "wb") as f:
                     f.write(image.content)
-        except:
-            print("An error occured")
 
-            return self.name
+        except Exception as e:
+            print("An error occured")
+            print(e)
