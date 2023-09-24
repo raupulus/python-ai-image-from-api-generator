@@ -5,6 +5,8 @@ import json
 import openai
 from dotenv import load_dotenv
 from Models.DalleOpenAi import DalleOpenAi
+from Models.Gpt import Gpt
+
 
 load_dotenv()
 
@@ -12,12 +14,30 @@ DEBUG = os.getenv("DEBUG")
 
 openai.api_key = os.getenv("API_KEY_OPENAI")
 
-prompt = "an elephant bathing, professional photography, high definition"
-quantity = 1 # Cantidad de imágenes a crear: 1-10
+quantity = 2 # Cantidad de imágenes a crear: 1-10
 size = "1024x1024" # Tamaño de las imágenes: 256x256, 512x512, or 1024x1024
-model = "davinci" # image-alpha-001, image-text-001
 
 
-apiModel = DalleOpenAi(model=model, debug=DEBUG)
+gpt = Gpt(model="gpt-3.5-turbo")
 
+#gpt.list_all_models()
+
+#gpt.add_tune('photographer.jsonl')
+
+apiModel = DalleOpenAi(model="davinci", debug=DEBUG)
+
+
+prompt = gpt.next_prompt()
+print("nextPromt: ", prompt)
+
+#apiModel.generate_images(prompt, quantity, size)
+
+exit(1)
+prompt = gpt.next_prompt()
+print("nextPromt: ", prompt)
+apiModel.generate_images(prompt, quantity, size)
+
+
+prompt = gpt.next_prompt()
+print("nextPromt: ", prompt)
 apiModel.generate_images(prompt, quantity, size)

@@ -163,3 +163,4 @@ cython_debug/
 .env.py
 env
 env.py
+*.log

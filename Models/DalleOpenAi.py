@@ -1,9 +1,11 @@
+#! /usr/bin/env python3
+
 import openai
 import os
 import requests
 from PIL import Image
-from dotenv import load_dotenv
 from time import sleep
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -33,12 +35,15 @@ class DalleOpenAi:
 
     def generate_request(self, prompt, quantity = 1, size = "256x256"):
 
+        print('entra')
+        print(prompt)
+        print(self.model)
         try:
             response = openai.Image.create(
                 prompt = prompt,
                 n = quantity,
                 size = size,
-                model = self.model
+                #model = self.model
             )
 
             datas = response['data']
