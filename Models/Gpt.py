@@ -5,6 +5,8 @@ import openai
 import requests
 from dotenv import load_dotenv
 from time import sleep
+from RoleSelector import RoleSelector
+
 
 load_dotenv()
 
@@ -27,6 +29,8 @@ class Gpt:
         self.APIKey = openai.api_key
 
         self.model = model
+
+        self.role = RoleSelector()
 
     def add_tune(self, name):
         create_tune = openai.File.create(
@@ -111,29 +115,43 @@ class Gpt:
         #model = "ft:gpt-3.5-turbo-0613:org-al6rqfENpjdD0OdrrwOMlqhC::file-KYEitEh4VKARTkr1Lfnc4DUR"
         model = "ft:gpt-3.5-turbo-0613:personal::82NhLBZa"
 
-        messages = [
-            {
-                "role": "system",
-                "content": "You are a prompt generator that only responds to a suggestion for the user to create a real or fictitious image of animals or non-real beings from your text suggestion. Responses must contain labels with more details separated by commas until reaching a minimum of 200 characters and a maximum of 800 characters."
-            },
+        prompt = [
+            "Put yourself in the role of a professional photographer. Generate me a json that contains the fields: title, description,  metatags. It should be focused on describing a photographic scene. The title should be a few words (between 5 and 20 words) and oncise. The description should be moderately detailed and contain between 200 and 600 characters. The metatags will be a comma-separated list with a maximum of 10 words containing the most relevant information for the content described. The response cannot contain anything other than a json object. The json content must be in English. Example response: {\ntitle: \"An elephant bathing in a lake\",\ndescription: \"8k photograph of an elephant in a lake pouring water from its trunk over its head. Lake with crystal clear water and ripples due to the wind. In the background there are a few very large, green palm trees surrounding the lake. The sun is setting. There are few clouds in the sky. In the distance you can see other elephants in and out of the lake. An elephant is drinking water. There are parrots and other vibrantly colored birds near the lake and in the palm trees.\",\nmetatags: \"elephant, lake, sun, animal, photograph\"\n}",
 
+            "Other example: {title: \"An elephant bathing in a lake\",description: \"8k photograph of an elephant in a lake pouring water from its trunk over its head. Lake with crystal clear water and ripples due to the wind. In the background there are a few very large, green palm trees surrounding the lake. The sun is setting. There are few clouds in the sky. In the distance you can see other elephants in and out of the lake. An elephant is drinking water. There are parrots and other vibrantly colored birds near the lake and in the palm trees.\",metatags: \"elephant, lake, sun, animal, photograph\"}",
 
+            "And Other example: {\"title\": \"Golden Sunset Over Beach\",\"description\": \"A breathtaking view of the sun setting over the tranquil beaches. The sky is painted with hues of orange, pink, and purple, casting a warm and inviting glow over the sand and the calm waves of the Atlantic Ocean. People stroll along the shoreline, enjoying the serene beauty of this coastal town. The iconic lighthouse of city stands tall, silhouetted against the stunning backdrop of the setting sun, adding a touch of nostalgia to this picturesque scene.\",\"metatags\": \"sunset, beach, lighthouse, coastal, ocean\"}",
+
+            "Give me another json"
         ]
 
+        """
         response = openai.ChatCompletion.create(
             model=model,
             messages=messages,
         )
 
         response_message = response["choices"][0]["message"]
+        """
+
+        response = openai.Completion.create(
+            engine="gpt-3.5-turbo-instruct",  # Modelo "gpt-3.5-turbo"
+            prompt=prompt,
+            max_tokens=2000,  # Número máximo de tokens en la respuesta
+            temperature=1.4,  # Temperatura de la respuesta. De 0-2, a partir de 0.8 es más random.
+            #n=1,
+        )
+
+
+        response_message = response["choices"][0]["text"]
 
         #print("")
-        #print("response: ", response)
+        print("response: ", response)
         #print("")
         #print("response_message: ", response_message)
         #print("")
 
-        return response_message["content"]
+        return response_message
 
 
     def delete_all_tune(self):

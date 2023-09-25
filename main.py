@@ -24,7 +24,7 @@ gpt = Gpt(model="gpt-3.5-turbo")
 
 #gpt.add_tune('photographer.jsonl')
 
-apiModel = DalleOpenAi(model="davinci", debug=DEBUG)
+#apiModel = DalleOpenAi(model="davinci", debug=DEBUG)
 
 
 prompt = gpt.next_prompt()
