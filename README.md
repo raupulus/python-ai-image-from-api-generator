@@ -35,6 +35,7 @@ python main.py
 
 ## Tareas pendientes -> TODO
 
+- [] En el título que se genera automáticamente, reemplazar carácteres como ":" por guiones o espacios
 - [] Parametrizar script para recibir el origen de los datos: python main.py dall-e, python main.py stablediffusion
 - [] Directorios con el nombre del "titulo" generado para describir la imagen
 - [] Incluir archivo "info.txt" con los metadatos del prompt y propiedades de la imagen en el directorio de las imágenes

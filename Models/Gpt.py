@@ -6,14 +6,20 @@ import requests
 from dotenv import load_dotenv
 from time import sleep
 from Models.RoleSelector import RoleSelector
+import json
 
 
 load_dotenv()
 
 class Gpt:
-    current_prompt = ""
+    ## Cadena de texto con el último prompt generado.
+    current_prompt = None
 
-    def __init__(self, model = "gpt-3.5-turbo"):
+    ## Diccionario con los datos para generar el prompt actual {title: "", "descrption": "", "metatags": ""}
+    current_prompt_data = None
+
+
+    def __init__(self, model = "gpt-3.5-turbo-instruct"):
         # Definimos el role para el GPT-3
 
         self.DEBUG = os.getenv("DEBUG");
@@ -22,7 +28,6 @@ class Gpt:
 
         openai.api_key = os.getenv("API_KEY_OPENAI")
         openai.organization = os.getenv("ORGANIZATION_OPENAI")
-        openai.organization = "org-al6rqfENpjdD0OdrrwOMlqhC"
 
         self.APIKey = openai.api_key
         self.organization = openai.organization
@@ -119,23 +124,18 @@ class Gpt:
             print("jobs: ", jobs)
 
     def generate_request(self):
-        model = "ft:gpt-3.5-turbo-0613:personal::82NhLBZa"
+        model = self.model
+        role = self.role
 
-        prompt = [
-            "Put yourself in the role of a professional photographer. Generate me a json that contains the fields: title, description,  metatags. It should be focused on describing a photographic scene. The title should be a few words (between 5 and 20 words) and oncise. The description should be moderately detailed and contain between 100 and 400 characters in plain text. The metatags will be a comma-separated list with a maximum of 10 words containing the most relevant information for the content described. The response cannot contain anything other than a json object. The json content must be in English. Example response: {\ntitle: \"An elephant bathing in a lake\",\ndescription: \"8k photograph of an elephant in a lake pouring water from its trunk over its head. Lake with crystal clear water and ripples due to the wind. In the background there are a few very large, green palm trees surrounding the lake. The sun is setting. There are few clouds in the sky. In the distance you can see other elephants in and out of the lake. An elephant is drinking water. There are parrots and other vibrantly colored birds near the lake and in the palm trees.\",\nmetatags: \"elephant, lake, sun, animal, photograph\"\n}",
-
-            "Other example: {title: \"An elephant bathing in a lake\",description: \"8k photograph of an elephant in a lake pouring water from its trunk over its head. Lake with crystal clear water and ripples due to the wind. In the background there are a few very large, green palm trees surrounding the lake. The sun is setting. There are few clouds in the sky. In the distance you can see other elephants in and out of the lake. An elephant is drinking water. There are parrots and other vibrantly colored birds near the lake and in the palm trees.\",metatags: \"elephant, lake, sun, animal, photograph\"}",
-
-            "And Other example: {\"title\": \"Golden Sunset Over Beach\",\"description\": \"A breathtaking view of the sun setting over the tranquil beaches. The sky is painted with hues of orange, pink, and purple, casting a warm and inviting glow over the sand and the calm waves of the Atlantic Ocean. People stroll along the shoreline, enjoying the serene beauty of this coastal town. The iconic lighthouse of city stands tall, silhouetted against the stunning backdrop of the setting sun, adding a touch of nostalgia to this picturesque scene.\",\"metatags\": \"sunset, beach, lighthouse, coastal, ocean\"}",
-
-            "give me another json that contains a random suggestion in the format of the previous examples but is not similar information"
-        ]
+        ## Obtengo los prompts en base al role elegido
+        prompts = role.get_prompts()
 
         response = openai.Completion.create(
-            engine="gpt-3.5-turbo-instruct",  # Modelo "gpt-3.5-turbo", "gpt-3.5-turbo-instruct"...
-            prompt=prompt,
+            engine=self.model,  # Modelo "gpt-3.5-turbo", "gpt-3.5-turbo-instruct"...
+            prompt=prompts,
             max_tokens=2000,  # Número máximo de tokens en la respuesta
             temperature=1.4,  # Temperatura de la respuesta. De 0-2, a partir de 0.8 es más random.
+            user='python-ai-image-from-api-generator',
             #n=1,
         )
 
@@ -145,27 +145,7 @@ class Gpt:
         if self.DEBUG:
             print("Response from API: ", response)
 
-        return response_message
-
-
-    def delete_all_tune(self):
-        """
-        Consulta todos los modelos generados por mi para tune de chat y los elimina.
-        """
-
-        models = openai.Model.list()
-
-        print("models: ", models)
-
-        # TODO: Recorrer todos los modelos y eliminarlos
-
-    def get_prompt(self):
-        """
-        Devuelve el prompt actual
-        :return: El prompt actual. Ej: "an elephant bathing, professional photography, high definition"
-        """
-
-        return self.current_prompt
+        return response_message.strip()
 
     def next_prompt(self):
         """
@@ -173,17 +153,73 @@ class Gpt:
         :return: Nuevo prompt generado
         """
 
-        new_prompt = self.generate_request()
+        ## Establezco un role aleatorio para componer el prompt
+        self.role.set_random_role()
+
+        counter = 1 # Máximo de intentos para obtener json
+        limit = 1 # Máximo de intentos para obtener json
+        new_prompt = None
+        new_prompt_data = None
+
+        while counter <= limit and (new_prompt is None or new_prompt_data is None):
+            counter += 1
+
+            new_prompt = self.generate_request()
+
+            if new_prompt and len(new_prompt):
+                try:
+                    new_prompt_data = json.loads(new_prompt)
+                    new_prompt = new_prompt_data["title"] + ", " + new_prompt_data["description"] + ", " + new_prompt_data["metatags"]
+                except Exception as e:
+                    if self.DEBUG:
+                        print("An error occured")
+                        print(e)
+
+                    new_prompt = None
+                    new_prompt_data = None
 
         self.current_prompt = new_prompt
+        self.current_prompt_data = new_prompt_data
+
+        if self.DEBUG:
+            print("new_prompt: ", new_prompt)
+            print("new_prompt_data: ", new_prompt_data)
 
         return new_prompt
+
+    def delete_all_tune(self):
+        """
+        Consulta todos los modelos generados por mi para tune de chat y los elimina.
+
+        TODO: Recorrer todos los modelos y eliminarlos
+        """
+
+        models = openai.Model.list()
+
+        if self.DEBUG:
+            print("models: ", models)
+
+    def get_prompt(self):
+        """
+        Devuelve el prompt actual
+
+        :return: El prompt actual. Ej: "an elephant bathing, professional photography, high definition"
+        """
+
+        return self.current_prompt
+
+    def get_prompt_data(self):
+        """
+        Devuelve el diccionario con la información para generar el prompt actual
+        """
+
+        return self.current_prompt_data
 
     def list_all_models(self):
         """
         Lista todos los modelos generados por mi
         """
 
-        models = openai.Model.list(organization="org-al6rqfENpjdD0OdrrwOMlqhC",)
+        models = openai.Model.list(organization=self.organization)
 
         print("models: ", models)

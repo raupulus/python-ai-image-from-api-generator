@@ -1,11 +1,14 @@
 #! /usr/bin/env python
 
 import random
+import json
+
 class RoleSelector:
     def __init__(self):
 
         self.roles_tuning = {
             "photographer": {
+                "file": "photographer", ## Archivo dentro del directorio "tuning"
                 "scenes": [
                     "street", "city", "nature", "landscape", "watercolor", "nature", "street", "mountain", "beach",  "forest", "sunset", "architecture", "wildlife", "portrait", "macro", "night", "urban", "cloudscape", "seascape", "countryside", "industrial", "vintage", "abstract", "underwater", "aerial", "desert", "park", "winter", "spring", "summer", "fall", "autumn", "rainforest", "lake", "river", "ocean", "cave", "alley", "fireworks", "star", "snow", "reflection", "bridge", "farm", "jungle", "village"
                 ],
@@ -61,4 +64,22 @@ class RoleSelector:
 
     def get_random_tags(self):
         ## TODO: Obtener 1 escena, 1 autor y 3 tags aleatorios
+
         pass
+
+    def get_prompts(self):
+        file = 'tuning' + "/" + self.roles_tuning[self.role]["file"] + ".jsonl"
+
+        prompts = []
+
+        # Leer el archivo JSONL
+        with open(file, "r") as file:
+            prompts = [json.loads(line.strip()).get("prompt") for line in file]
+
+        file.close()
+
+        ## TODO: Añadir información de las etiquetas del role automáticamente
+
+        prompts.append("Returns another json with the attributes: title, description and metatags. It should contain only a random suggestion in the format of the previous examples but not information similar to the previous one.")
+
+        return prompts
