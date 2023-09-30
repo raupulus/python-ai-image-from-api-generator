@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from time import sleep
 from Models.RoleSelector import RoleSelector
 import json
-
+import re
 
 load_dotenv()
 
@@ -124,6 +124,11 @@ class Gpt:
             print("jobs: ", jobs)
 
     def generate_request(self):
+        """
+        Genera un nuevo prompt en base a un role aleatorio y lo devuelve.
+
+        :return: Nuevo prompt generado
+        """
         model = self.model
         role = self.role
 
@@ -136,16 +141,44 @@ class Gpt:
             max_tokens=2000,  # Número máximo de tokens en la respuesta
             temperature=1.4,  # Temperatura de la respuesta. De 0-2, a partir de 0.8 es más random.
             user='python-ai-image-from-api-generator',
-            #n=1,
+            n=1,
         )
 
-
         response_message = response["choices"][0]["text"]
+        response_message = re.sub('\W+\s\{\}','', response_message)
 
         if self.DEBUG:
             print("Response from API: ", response)
 
-        return response_message.strip()
+        compiled = re.compile(re.escape("title"), re.IGNORECASE)
+        response_message = compiled.sub("title", response_message)
+
+        compiled = re.compile(re.escape("description"), re.IGNORECASE)
+        response_message = compiled.sub("description", response_message)
+
+        compiled = re.compile(re.escape("metatags"), re.IGNORECASE)
+        response_message = compiled.sub("metatags", response_message)
+
+        compiled = re.compile(r"\s+")
+        response_message = compiled.sub(" ", response_message).strip()
+
+        start_of_json = response_message.find("{")
+        end_of_json = response_message.find("}")
+
+        response_message = response_message[start_of_json:(end_of_json + 1)]
+
+        return response_message.strip() \
+            .replace(r"\n", "") \
+            .replace(r"\t", "") \
+            .replace(r"\r", "") \
+            .replace(r"\`", "") \
+            .replace(r"\>", "") \
+            .replace(r"\s*", " ") \
+            .replace(r"\“", "\"") \
+            .replace(r"\”", "\"") \
+            .replace(r"\*", "") \
+            .replace(r"\_", "")
+
 
     def next_prompt(self):
         """
@@ -156,7 +189,7 @@ class Gpt:
         ## Establezco un role aleatorio para componer el prompt
         self.role.set_random_role()
 
-        counter = 1 # Máximo de intentos para obtener json
+        counter = 1 # Contador de intentos para obtener json
         limit = 1 # Máximo de intentos para obtener json
         new_prompt = None
         new_prompt_data = None
@@ -166,14 +199,29 @@ class Gpt:
 
             new_prompt = self.generate_request()
 
+            print("")
+            print("new_prompt antes de decodificar JSON: ", new_prompt)
+            print("")
+
             if new_prompt and len(new_prompt):
                 try:
                     new_prompt_data = json.loads(new_prompt)
-                    new_prompt = new_prompt_data["title"] + ", " + new_prompt_data["description"] + ", " + new_prompt_data["metatags"]
+
+                    metatags = new_prompt_data["metatags"]
+
+                    if isinstance(metatags, list) and len(metatags) > 0:
+                        metatags = ",".join(metatags)
+
+                    title = re.sub('\W+\s','', new_prompt_data["title"]).replace(r"\:", "")
+                    description = re.sub('\W+\s','', new_prompt_data["description"])
+
+                    new_prompt = title + ", " + description + ", " + metatags
+
                 except Exception as e:
                     if self.DEBUG:
                         print("An error occured")
                         print(e)
+                        print("ERROR PROMPT: ", new_prompt)
 
                     new_prompt = None
                     new_prompt_data = None
