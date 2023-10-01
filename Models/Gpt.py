@@ -172,8 +172,10 @@ class Gpt:
             .replace(r"\t", "") \
             .replace(r"\r", "") \
             .replace(r"\`", "") \
+            .replace(r"\.", ' ') \
             .replace(r"\>", "") \
-            .replace(r"\s*", " ") \
+            .replace(r"\/", "") \
+            .replace(r"\s*", ' ') \
             .replace(r"\“", "\"") \
             .replace(r"\”", "\"") \
             .replace(r"\*", "") \
@@ -190,7 +192,7 @@ class Gpt:
         self.role.set_random_role()
 
         counter = 1 # Contador de intentos para obtener json
-        limit = 1 # Máximo de intentos para obtener json
+        limit = 5 # Máximo de intentos para obtener json
         new_prompt = None
         new_prompt_data = None
 
@@ -199,9 +201,10 @@ class Gpt:
 
             new_prompt = self.generate_request()
 
-            print("")
-            print("new_prompt antes de decodificar JSON: ", new_prompt)
-            print("")
+            if self.DEBUG:
+                print("")
+                print("new_prompt antes de decodificar JSON: ", new_prompt)
+                print("")
 
             if new_prompt and len(new_prompt):
                 try:
@@ -212,7 +215,7 @@ class Gpt:
                     if isinstance(metatags, list) and len(metatags) > 0:
                         metatags = ",".join(metatags)
 
-                    title = re.sub('\W+\s','', new_prompt_data["title"]).replace(r"\:", "")
+                    title = re.sub('\W+\s','', new_prompt_data["title"]).replace(r"\:", ' ')
                     description = re.sub('\W+\s','', new_prompt_data["description"])
 
                     new_prompt = title + ", " + description + ", " + metatags
@@ -233,7 +236,12 @@ class Gpt:
             print("new_prompt: ", new_prompt)
             print("new_prompt_data: ", new_prompt_data)
 
-        return new_prompt
+        return {
+            "prompt": new_prompt,
+            "title": title,
+            "description": description,
+            "metatags": metatags,
+        }
 
     def delete_all_tune(self):
         """

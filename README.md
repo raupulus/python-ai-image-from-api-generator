@@ -29,15 +29,21 @@ Copia el archivo **.env.example** a **.env** y rellena los datos para conectar a
 
 Una vez tengas las variables de entorno seteadas, puedes ejecutar el script de la siguiente forma:
 
-```python
+```bash
 python main.py
 ```
 
+### Solo crear CSV con un listado de prompts
+
+```bash
+python3 main.py --only-prompts=100
+```
+
+
 ## Tareas pendientes -> TODO
 
-- [] En el título que se genera automáticamente, reemplazar carácteres como ":" por guiones o espacios
+- [] Parametrizar para generar archivos json o csv con sugerencias de prompts
 - [] Parametrizar script para recibir el origen de los datos: python main.py dall-e, python main.py stablediffusion
-- [] Directorios con el nombre del "titulo" generado para describir la imagen
 - [] Incluir archivo "info.txt" con los metadatos del prompt y propiedades de la imagen en el directorio de las imágenes
-- [] Implementar modelo para conectar con stable diffusion
+- [] Incluir archivo "info.json" con los metadatos del prompt y propiedades de la imagen en el directorio de las imágenes, para poder trabajarlo en redes sociales
 - [] Implementar entorno virtual para python
