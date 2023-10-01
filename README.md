@@ -56,6 +56,4 @@ python3 main.py 10 --only-prompts
 
 ## Tareas pendientes -> TODO
 
-- [] Incluir archivo "info.txt" con los metadatos del prompt y propiedades de la imagen en el directorio de las imágenes
-- [] Incluir archivo "info.json" con los metadatos del prompt y propiedades de la imagen en el directorio de las imágenes, para poder trabajarlo en redes sociales
 - [] Implementar entorno virtual para python

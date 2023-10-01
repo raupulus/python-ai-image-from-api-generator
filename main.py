@@ -5,6 +5,7 @@ import argparse
 from Models.DalleOpenAi import DalleOpenAi
 from Models.Gpt import Gpt
 from Models.StableDiffusion import StableDiffusion
+import json
 
 load_dotenv()
 
@@ -57,17 +58,46 @@ prompt = promptDict['prompt']
 title = promptDict['title']
 description = promptDict['description']
 metatags = promptDict['metatags']
+steps=10
 
 if stable_diffusion:
     stable_diffusion = StableDiffusion(debug=DEBUG)
-    stable_diffusion.generate_images(prompt=prompt, quantity=quantity, size=size, path=title, steps=10)
+    path = stable_diffusion.generate_images(prompt=prompt, quantity=quantity, size=size, path=title, steps=steps)
 
 elif dalle:
     ## Instancia del modelo para Dall-e
     apiModel = DalleOpenAi(model="davinci", debug=DEBUG)
 
     ## Genera una imagen desde la api de Dall-e
-    apiModel.generate_images(prompt, quantity, size, title)
+    path = apiModel.generate_images(prompt, quantity, size, title)
+
+
+## TODO: Llevar info a archivos "info.md" y "info.json"
+stringInfoMd = f"# Info\n\nTitle: {title}\nCantidad de imágenes: {quantity}\n\n## Descripción de la búsqueda\n\n{prompt}\n\n## Etiquetas\n\n{metatags}\n\n# Parámetros de configuración\n\nTamaño: {size}\nPasos: {steps}\n"
+
+# Separo los metatags en una lista
+metatagsList = metatags.split(",")
+
+jsonInfo = {
+    "title": title,
+    "description": description,
+    "metatags": metatagsList,
+    "size": size,
+    "steps": steps,
+    "prompt": prompt,
+    "quantity": quantity,
+}
+
+infoMdFile = path + "/info.md"
+infoJsFile = path + "/info.json"
+
+## Almaceno los datos en markdown
+with open(infoMdFile, "w") as f:
+    f.write(stringInfoMd)
+
+## Almaceno los datos en json
+with open(infoJsFile, "w") as f:
+    f.write(json.dumps(jsonInfo))
 
 
 ## Ver todos los modelos disponibles

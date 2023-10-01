@@ -89,6 +89,8 @@ class DalleOpenAi:
 
         self.is_busy = False
 
+        return full_path
+
     def download_images(self, urls)-> None:
         """
         Args:

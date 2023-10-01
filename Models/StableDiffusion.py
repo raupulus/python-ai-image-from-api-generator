@@ -93,13 +93,9 @@ class StableDiffusion:
 
             self.generate_request(prompt, size = size)
 
-
-        ## TODO: Llevar info a archivos "info.md" y "info.json"
-
-
-
-
         self.is_busy = False
+
+        return full_path
 
     def download_image(self, json)-> None:
         """
