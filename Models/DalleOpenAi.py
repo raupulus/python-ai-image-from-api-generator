@@ -34,10 +34,6 @@ class DalleOpenAi:
         self.DEBUG = debug
 
     def generate_request(self, prompt, quantity = 1, size = "256x256"):
-
-        print('entra')
-        print(prompt)
-        print(self.model)
         try:
             response = openai.Image.create(
                 prompt = prompt,
@@ -65,7 +61,7 @@ class DalleOpenAi:
         if path is None:
             name = os.urandom(16).hex()
         else:
-            name = path
+            name = name = os.urandom(2).hex() + "-" + path
 
         self.current_groupname = name
 

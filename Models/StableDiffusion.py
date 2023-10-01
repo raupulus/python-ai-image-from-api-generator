@@ -5,6 +5,9 @@ import io
 import os
 import base64
 from PIL import Image
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class StableDiffusion:
     # Posición actual iterando imágenes del lote
@@ -26,15 +29,17 @@ class StableDiffusion:
         self.model = model
         self.DEBUG = debug
 
-    def generate_request(self, prompt, size = "128x128"):
-        url = "http://172.18.0.2:7860"
+        self.url = os.getenv("STABLE_DIFFUSION_URL")
+
+    def generate_request(self, prompt, size = "128x128", steps = 20):
+        url = self.url
 
         width = size.split("x")[0]
         height = size.split("x")[1]
 
         payload = {
             "prompt": prompt,
-            "steps": 20,
+            "steps": steps,
             "seed": -1,
             "width": width,
             "height": height,
@@ -55,7 +60,7 @@ class StableDiffusion:
         except Exception as e:
             print(e)
 
-    def generate_images(self, prompt, quantity = 1, size = "256x256", path = None):
+    def generate_images(self, prompt, quantity = 1, size = "256x256", path = None, steps = 20):
         while self.is_busy:
             print("Esperando a que la API esté disponible...")
 
@@ -87,6 +92,12 @@ class StableDiffusion:
             pending_quantity -= 1
 
             self.generate_request(prompt, size = size)
+
+
+        ## TODO: Llevar info a archivos "info.md" y "info.json"
+
+
+
 
         self.is_busy = False
 

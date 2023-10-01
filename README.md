@@ -27,23 +27,35 @@ Primero necesitas configurar las variables de entorno.
 
 Copia el archivo **.env.example** a **.env** y rellena los datos para conectar a la API tras generarlos en tu panel.
 
-Una vez tengas las variables de entorno seteadas, puedes ejecutar el script de la siguiente forma:
+Una vez tengas las variables de entorno seteadas, puedes ejecutar el script de la siguiente forma para generar 10 imágenes con Stable Diffusion:
 
 ```bash
-python main.py
+python main.py 10 --stable-diffusion
 ```
+
+```bash
+python main.py 10 --dalle
+```
+
+Nota: No puedes usar varias apis a la vez, se tomará la primera e ignorará las demás. No es compatible con generación multi-api en paralelo.
 
 ### Solo crear CSV con un listado de prompts
 
+Podemos generar un listado de promtps con la estructura:
+
+<title><description><metatags><prompt>
+
+Al script principal, le pasaremos el argumento **--only-prompts** y esto deshabilitará automáticamente generar imágenes. Es decir, solo vamos a generar un listado de prompts en el directorio **output** con el nombre **batch_prompts.csv**
+
+Necesitamos pasar obligatoriamente una cantidad de prompts a generar como en el siguiente ejemplo para 10 prompts
+
 ```bash
-python3 main.py --only-prompts=100
+python3 main.py 10 --only-prompts
 ```
 
 
 ## Tareas pendientes -> TODO
 
-- [] Parametrizar para generar archivos json o csv con sugerencias de prompts
-- [] Parametrizar script para recibir el origen de los datos: python main.py dall-e, python main.py stablediffusion
 - [] Incluir archivo "info.txt" con los metadatos del prompt y propiedades de la imagen en el directorio de las imágenes
 - [] Incluir archivo "info.json" con los metadatos del prompt y propiedades de la imagen en el directorio de las imágenes, para poder trabajarlo en redes sociales
 - [] Implementar entorno virtual para python

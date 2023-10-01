@@ -279,3 +279,48 @@ class Gpt:
         models = openai.Model.list(organization=self.organization)
 
         print("models: ", models)
+
+    def generate_prompts_to_csv(self, quantity):
+        """
+        Genera un listado de prompts y los almacena en el directorio de salida
+        dentro de un archivo CSV.
+        """
+
+        counter = 0
+
+        script_path = os.getcwd()
+        full_path = script_path + "/output/batch_prompts.csv"
+
+        print('ENTRA EN METODO')
+        print("Cantidad: ", quantity)
+
+        if not os.path.exists(full_path):
+            with open(full_path, "w") as file:
+                file.write("title;description;metatags;prompt\n")
+
+            file.close()
+
+        while counter < quantity:
+            counter += 1
+
+            ## Obtengo un nuevo prompt
+            promptDict = self.next_prompt()
+
+            ## Extraigo los datos del nuevo prompt
+            prompt = promptDict['prompt'].strip()
+            title = promptDict['title'].strip()
+            description = promptDict['description'].strip()
+            metatags = promptDict['metatags'].strip()
+
+            if not prompt:
+                counter -= 1
+
+                sleep(5)
+
+                continue
+
+
+            with open(full_path, "a") as file:
+                file.write(title + ";" + description + ";" + metatags + ";" + prompt + "\n")
+
+            file.close()
