@@ -28,12 +28,33 @@ class DalleOpenAi:
 
 
     def __init__(self, model = "davinci", debug = False) -> str:
+        """
+        model (str): Modelo de generación de imágenes.
+        debug (bool): Indica si se debe imprimir información de depuración.
+        """
+
         openai.api_key = os.getenv("API_KEY_OPENAI")
         self.APIKey = openai.api_key
         self.model = model
         self.DEBUG = debug
 
     def generate_request(self, prompt, quantity = 1, size = "256x256"):
+        """
+        Prepara y realiza la petición a la API de OpenAI para generar imágenes.
+        Args:
+            prompt (str): Pregunta para generar imágenes.
+            quantity (int): Cantidad de imágenes a generar.
+            size (str): Tamaño de las imágenes a generar.
+            path (str): Ruta hacia el directorio donde se guardarán las imágenes.
+            model (str): Modelo de generación de imágenes.
+            debug (bool): Indica si se debe imprimir información de depuración.
+        Returns:
+            None.
+        Raises:
+            openai.error.OpenAIError: Ocurre cuando ocurre un error en la petición a la API de OpenAI.
+            requests.exceptions.RequestException: Ocurre cuando ocurre un error en la petición a la API de OpenAI.
+            Exception: Ocurre cuando ocurre un error en la petición a la API de OpenAI.
+        """
         try:
             response = openai.Image.create(
                 prompt = prompt,
@@ -53,6 +74,16 @@ class DalleOpenAi:
 
 
     def generate_images(self, prompt, quantity = 1, size = "256x256", path = None):
+        """
+        Genera imágenes con la API de OpenAI.
+        Args:
+            prompt (str): Descripción para generar imágenes.
+            quantity (int): Cantidad de imágenes a generar.
+            size (str): Tamaño de las imágenes a generar.
+            path (str): Nombre del directorio donde se guardarán las imágenes.
+        Returns:
+            Devuelve el directorio con ruta absoluta hacia la nueva galería.
+        """
         while self.is_busy:
             print("Esperando a que la API esté disponible...")
 
@@ -93,8 +124,11 @@ class DalleOpenAi:
 
     def download_images(self, urls)-> None:
         """
+        Descarga las imágenes de la lista de URLs.
         Args:
-            urls (dic): Urls con la ruta a las imágenes
+            urls (list): Lista de URLs de imágenes.
+        Returns:
+            None.
         """
 
         full_path = self.current_full_path

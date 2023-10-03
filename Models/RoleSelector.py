@@ -10,8 +10,8 @@ import Data.artist as data_artist
 load_dotenv()
 
 class RoleSelector:
-    def __init__(self):
 
+    def __init__(self):
         self.DEBUG = os.getenv("DEBUG")
 
         self.roles_tuning = {
@@ -21,7 +21,6 @@ class RoleSelector:
 
         # Establezco un role aleatorio al instanciarse
         self.set_random_role()
-
 
     def set_random_role(self):
         """
@@ -43,7 +42,13 @@ class RoleSelector:
 
     def change_role(self, role):
         """
-        Cambia el role
+        Cambia el role a uno existente concreto.
+
+        Args:
+            role (str): El role a cambiar.
+
+        Returns:
+            str: El role actual.
         """
 
         self.role = list(self.roles_tuning.keys())[role]
@@ -51,6 +56,13 @@ class RoleSelector:
         return role
 
     def get_prompts(self):
+        """
+        Devuelve todos los prompts para el role actual.
+
+        Returns:
+            list: Los prompts para el role actual.
+        """
+
         file = 'tuning' + "/" + self.roles_tuning[self.role]["file"] + ".jsonl"
 
         role_description = self.roles_tuning[self.role]["description"]

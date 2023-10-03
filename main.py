@@ -72,12 +72,15 @@ elif dalle:
     path = apiModel.generate_images(prompt, quantity, size, title)
 
 
-## TODO: Llevar info a archivos "info.md" y "info.json"
+## Información para archivo markdown
 stringInfoMd = f"# Info\n\nTitle: {title}\nCantidad de imágenes: {quantity}\n\n## Descripción de la búsqueda\n\n{prompt}\n\n## Etiquetas\n\n{metatags}\n\n# Parámetros de configuración\n\nTamaño: {size}\nPasos: {steps}\n"
 
 # Separo los metatags en una lista
 metatagsList = metatags.split(",")
 
+metatagsList = [x.strip() for x in metatagsList]
+
+## Información para archivo JSON
 jsonInfo = {
     "title": title,
     "description": description,
@@ -105,11 +108,5 @@ with open(infoJsFile, "w") as file:
 ## Archivo oculto indicando que todas las imágenes fueron generadas
 with open(imagesGeneratedFile, "w") as file:
     file.write(f"Images Generated: {quantity}")
-
-## Ver todos los modelos disponibles
-#gpt.list_all_models()
-
-## Añadir tu propio fine Tune en base a un modelo
-#gpt.add_tune('photographer.jsonl')
 
 exit(0)

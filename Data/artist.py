@@ -80,6 +80,4 @@ def getData():
             "family", "parenting", "children", "relationship", "love", "friendship",
             "community", "people", "diversity", "culture", "celebration", "holiday", "tradition", "festive"
         ]
-
-
     }

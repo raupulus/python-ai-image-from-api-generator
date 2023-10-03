@@ -6,6 +6,7 @@ import os
 import base64
 from PIL import Image
 from dotenv import load_dotenv
+import openai
 
 load_dotenv()
 
@@ -26,12 +27,31 @@ class StableDiffusion:
     is_busy = False
 
     def __init__(self, model = "stable_diffusion2.15", debug = False):
+        """
+        model (str): Modelo de generación de imágenes.
+        debug (bool): Indica si se debe imprimir información de depuración.
+        """
+
         self.model = model
         self.DEBUG = debug
 
         self.url = os.getenv("STABLE_DIFFUSION_URL")
 
     def generate_request(self, prompt, size = "128x128", steps = 20):
+        """
+        Prepara y realiza la petición a la API de Stable Diffusion para generar imágenes.
+        Args:
+            prompt (str): Pregunta para generar imágenes.
+            quantity (int): Cantidad de imágenes a generar.
+            size (str): Tamaño de las imágenes a generar.
+            path (str): Ruta hacia el directorio donde se guardarán las imágenes.
+            steps (int): Cantidad de pasos de la generación de imágenes.
+        Returns:
+            None.
+        Raises:
+            requests.exceptions.RequestException: Ocurre cuando ocurre un error en la petición a la API de Stable Diffusion.
+            Exception: Ocurre cuando ocurre un error en la petición a la API de Stable Diffusion.
+        """
         url = self.url
 
         width = size.split("x")[0]
@@ -61,6 +81,16 @@ class StableDiffusion:
             print(e)
 
     def generate_images(self, prompt, quantity = 1, size = "256x256", path = None, steps = 20):
+        """
+        Prepara y realiza la petición a la API de Stable Diffusion para generar imágenes.
+        Args:
+            prompt (str): Descripción para generar imágenes.
+            quantity (int): Cantidad de imágenes a generar.
+            size (str): Tamaño de las imágenes a generar.
+            path (str): Nombre del directorio donde se guardarán las imágenes.
+        Returns:
+            Devuelve el directorio con ruta absoluta hacia la nueva galería.
+        """
         while self.is_busy:
             print("Esperando a que la API esté disponible...")
 
@@ -99,6 +129,8 @@ class StableDiffusion:
 
     def download_image(self, json)-> None:
         """
+        Descarga una imágen a partir de un json.
+
         Args:
             json: Datos con la imágen en json, codificados en base64
         """

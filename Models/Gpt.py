@@ -20,6 +20,11 @@ class Gpt:
 
 
     def __init__(self, model = "gpt-3.5-turbo-instruct"):
+        """
+        Args:
+            model (str): Modelo de generación de texto.
+        """
+
         # Definimos el role para el GPT-3
 
         self.DEBUG = os.getenv("DEBUG");
@@ -37,6 +42,12 @@ class Gpt:
         self.role = RoleSelector()
 
     def add_tune(self, name):
+        """
+        Agrega un tune a la API de OpenAI. Esto es principalmente para modelos de chat.
+
+        Args:
+            name (str): Nombre del archivo a subir.
+        """
         create_tune = openai.File.create(
             file=open("tuning/" + name, "rb"),
             purpose='fine-tune',
@@ -185,6 +196,7 @@ class Gpt:
     def next_prompt(self):
         """
         Solicita un nuevo prompt y lo devuelve
+
         :return: Nuevo prompt generado
         """
 
@@ -278,21 +290,23 @@ class Gpt:
 
         models = openai.Model.list(organization=self.organization)
 
+        print("")
         print("models: ", models)
+        print("")
 
     def generate_prompts_to_csv(self, quantity):
         """
         Genera un listado de prompts y los almacena en el directorio de salida
         dentro de un archivo CSV.
+
+        Args:
+            quantity (int): Cantidad de prompts a generar.
         """
 
         counter = 0
 
         script_path = os.getcwd()
         full_path = script_path + "/output/batch_prompts.csv"
-
-        print('ENTRA EN METODO')
-        print("Cantidad: ", quantity)
 
         if not os.path.exists(full_path):
             with open(full_path, "w") as file:
@@ -318,7 +332,6 @@ class Gpt:
                 sleep(5)
 
                 continue
-
 
             with open(full_path, "a") as file:
                 file.write(title + ";" + description + ";" + metatags + ";" + prompt + "\n")
