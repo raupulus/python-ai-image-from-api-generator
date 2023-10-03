@@ -27,15 +27,22 @@ Primero necesitas configurar las variables de entorno.
 
 Copia el archivo **.env.example** a **.env** y rellena los datos para conectar a la API tras generarlos en tu panel.
 
-Una vez tengas las variables de entorno seteadas, puedes ejecutar el script de la siguiente forma para generar 10 imágenes con Stable Diffusion:
+Una vez tengas las variables de entorno seteadas, puedes ejecutar el script de la siguiente forma para generar 10 imágenes a 256x256 con Stable Diffusion:
 
 ```bash
-python main.py 10 --stable-diffusion
+python main.py 10 256x256 --stable-diffusion
 ```
 
+Y en este ejemplo usando la api de OpenAi con Dall-e:
+
 ```bash
-python main.py 10 --dalle
+python main.py 10 256x256 --dalle
 ```
+
+Como puedes observar, el script recibe **cantidad** de imágenes, luego **tamaño** y la **api** con la que generarlos.
+
+Una vez generado un lote de imágenes podemos observar que en el directorio se incluyen dos archivos con información.
+Uno de estos archivos está en markdown **info.md** y otro con los datos en json **info.json** para poder reutilizar esos metadatos en otras aplicaciones.
 
 Nota: No puedes usar varias apis a la vez, se tomará la primera e ignorará las demás. No es compatible con generación multi-api en paralelo.
 
@@ -53,6 +60,16 @@ Necesitamos pasar obligatoriamente una cantidad de prompts a generar como en el 
 python3 main.py 10 --only-prompts
 ```
 
+Veremos tras ejecutar que hay un nuevo archivo dentro de "output" con los datos en csv.
+
+Si ejecutamos varias veces el comando, los datos se van añadiendo al archivo sin borrar los anteriores. Se agregan al listado existente.
+
+## Directorios
+
+- Data: Almacena parámetros para sugerir tema, elementos y entorno sobre la imagen que pediremos a chatgpt describirnos.
+- Models: Contiene los Modelos para conectar a las api y selector de roles.
+- output: Aquí se almacena la salida, al generar imágenes quedarán aquí agrupadas en un directorio. También se guarda el csv cuando generamos un listado de prompts solamente.
+- tuning: Archivos JSONL con distintas respuestas json (una por línea) para poner en contexto a GPT cuando le pidamos datos. En estos archivos exponemos respuestas tal y como nos gustaría que lo haga GPT desde la API.
 
 ## Tareas pendientes -> TODO
 

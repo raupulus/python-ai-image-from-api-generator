@@ -91,14 +91,20 @@ jsonInfo = {
 infoMdFile = path + "/info.md"
 infoJsFile = path + "/info.json"
 
+## Ruta al archivo oculto indicando que todas las imágenes fueron generadas
+imagesGeneratedFile = path + "/.all_images_generated"
+
 ## Almaceno los datos en markdown
-with open(infoMdFile, "w") as f:
-    f.write(stringInfoMd)
+with open(infoMdFile, "w") as file:
+    file.write(stringInfoMd)
 
 ## Almaceno los datos en json
-with open(infoJsFile, "w") as f:
-    f.write(json.dumps(jsonInfo))
+with open(infoJsFile, "w") as file:
+    file.write(json.dumps(jsonInfo))
 
+## Archivo oculto indicando que todas las imágenes fueron generadas
+with open(imagesGeneratedFile, "w") as file:
+    file.write(f"Images Generated: {quantity}")
 
 ## Ver todos los modelos disponibles
 #gpt.list_all_models()
