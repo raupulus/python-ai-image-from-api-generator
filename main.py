@@ -23,7 +23,8 @@ config = vars(args)
 
 if DEBUG:
     print("")
-    print("Parámetros recibidos:", config)
+    print("")
+    print("Parámetros recibidos por consola:", config)
     print("")
 
 ## Establezco variables de configuración
@@ -43,6 +44,10 @@ if only_prompts:
     print("")
 
     gpt.generate_prompts_to_csv(quantity=quantity)
+
+    ## Añado evento al log histórico
+    with open("historical.log", "a") as file:
+        file.write(f"\nSe han generado {quantity} prompts desde la api GPT al archivo CSV")
 
     exit(0)
 
@@ -108,5 +113,14 @@ with open(infoJsFile, "w") as file:
 ## Archivo oculto indicando que todas las imágenes fueron generadas
 with open(imagesGeneratedFile, "w") as file:
     file.write(f"Images Generated: {quantity}")
+
+## Añado evento al log histórico
+with open("historical.log", "a") as file:
+    if stable_diffusion:
+        api_used = "Stable Diffusion"
+    elif dalle:
+        api_used = "Dall-e"
+
+    file.write(f"\nSe han generado {quantity} imágenes desde la api {api_used} con el prompt: {prompt}")
 
 exit(0)
