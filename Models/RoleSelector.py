@@ -103,3 +103,13 @@ class RoleSelector:
             print("")
 
         return prompts
+
+    def get_params(self):
+        """
+        Devuelve los parámetros para el role actual.
+
+        Returns:
+            dict: Los parámetros para el role actual.
+        """
+
+        return self.roles_tuning[self.role]["params"]

@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 import os
-from dotenv import load_dotenv
-import argparse
-from Models.DalleOpenAi import DalleOpenAi
-from Models.Gpt import Gpt
-from Models.StableDiffusion import StableDiffusion
 import json
+import argparse
+from dotenv import load_dotenv
+from Models.Gpt import Gpt
+from Models.DalleOpenAi import DalleOpenAi
+from Models.RoleSelector import RoleSelector
+from Models.StableDiffusion import StableDiffusion
 
 load_dotenv()
 
@@ -34,8 +35,11 @@ stable_diffusion = config['stable_diffusion']
 dalle = config['dalle']
 size = config['size']
 
+## Instancia del role
+role = RoleSelector()
+
 ## Instancia para comunicarse con la API de GPT
-gpt = Gpt()
+gpt = Gpt(role)
 
 ## Si solo vamos a generar un listado de prompts en csv
 if only_prompts:
@@ -63,38 +67,51 @@ prompt = promptDict['prompt']
 title = promptDict['title']
 description = promptDict['description']
 metatags = promptDict['metatags']
-steps=10
 
 if stable_diffusion:
-    stable_diffusion = StableDiffusion(debug=DEBUG)
-    path = stable_diffusion.generate_images(prompt=prompt, quantity=quantity, size=size, path=title, steps=steps)
-
+    stable_diffusion = StableDiffusion(gpt.role, debug=DEBUG)
+    path = stable_diffusion.generate_images(prompt=prompt, quantity=quantity, size=size, path=title)
+    seeds = stable_diffusion.get_seeds()
+    params = stable_diffusion.get_params()
+    ai = "Stable Diffusion"
 elif dalle:
     ## Instancia del modelo para Dall-e
     apiModel = DalleOpenAi(model="davinci", debug=DEBUG)
 
     ## Genera una imagen desde la api de Dall-e
     path = apiModel.generate_images(prompt, quantity, size, title)
-
-
-## Información para archivo markdown
-stringInfoMd = f"# Info\n\nTitle: {title}\nCantidad de imágenes: {quantity}\n\n## Descripción de la búsqueda\n\n{prompt}\n\n## Etiquetas\n\n{metatags}\n\n# Parámetros de configuración\n\nTamaño: {size}\nPasos: {steps}\n"
+    seeds = []
+    params = {}
+    ai = "Dall-e"
 
 # Separo los metatags en una lista
 metatagsList = metatags.split(",")
-
 metatagsList = [x.strip() for x in metatagsList]
+
+## Creo una cadena con los hashtags (# + nombre del tag)
+hashtagsList = [f"#{x}" for x in metatagsList]
+hashtags = ", ".join(hashtagsList)
+
+# Uno los seed en una cadena
+seedsString = ", ".join(str(x) for x in seeds)
 
 ## Información para archivo JSON
 jsonInfo = {
+    "ai": ai,
     "title": title,
     "description": description,
     "metatags": metatagsList,
     "size": size,
-    "steps": steps,
     "prompt": prompt,
     "quantity": quantity,
+    "seeds": seeds,
 }
+
+## Mezclo el archivo JSON con los parámetros de configuración
+jsonInfo.update(params)
+
+## Información para archivo markdown
+stringInfoMd = f"# Info\n\nAI: {ai}\nTitle: {title}\nNumber of images: {quantity}\n\n## Search Description\n\n{prompt}\n\n## Tags\n\n{metatags}\n\n{hashtags}\n\n# Settings\n\nModel: {params.get('model', 'Does not apply')}\nSteps: {params.get('steps', 'Does not apply')}\nCfg Scale: {params.get('cfg_scale', 'Does not apply')}\nDenoising Strength: {params.get('denoising_strength', 'Does not apply')}\nSampler Index: {params.get('sampler_index', 'Does not apply')}\nRestore Faces: {params.get('restore_faces', 'Does not apply')}\n\n## Negative Prompt\n\n{params.get('negative_prompt', 'Does not apply')}\n\n## Seeds\n\n{seedsString}\n"
 
 infoMdFile = path + "/info.md"
 infoJsFile = path + "/info.json"
@@ -116,11 +133,6 @@ with open(imagesGeneratedFile, "w") as file:
 
 ## Añado evento al log histórico
 with open("historical.log", "a") as file:
-    if stable_diffusion:
-        api_used = "Stable Diffusion"
-    elif dalle:
-        api_used = "Dall-e"
-
-    file.write(f"\nSe han generado {quantity} imágenes desde la api {api_used} con el prompt: {prompt}")
+    file.write(f"\nSe han generado {quantity} imágenes desde la api {ai} con el prompt: {prompt}")
 
 exit(0)

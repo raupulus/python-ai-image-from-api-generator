@@ -4,6 +4,15 @@ def getData():
     return {
         "description": "Put yourself in the role of a professional photographer",
         "file": "photographer", ## Archivo dentro del directorio "tuning"
+        "params": { # Parámetros para configurar las peticiones api a Stable Diffusion
+            "model": "realistic_vision_v3.0_q6p_q8p.ckpt",
+            "steps": 60,
+            "cfg_scale": 5,
+            "denoising_strength": 0.4,
+            "sampler_index": "DPM++ 2M Karras",
+            "restore_faces": False,
+            "negative_prompt": "(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime:1.4), text, close up, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck",
+        },
         "scenes": [
             "street", "city", "nature", "landscape", "watercolor", "street", "mountain", "beach",  "forest", "sunset", "architecture", "wildlife", "portrait", "macro", "night", "urban", "cloudscape", "seascape", "countryside", "industrial", "vintage", "abstract", "underwater", "aerial", "desert", "park", "winter", "spring", "summer", "fall", "autumn", "rainforest", "lake", "river", "ocean", "cave", "alley", "fireworks", "star", "snow", "reflection", "bridge", "farm", "jungle", "village"
         ],

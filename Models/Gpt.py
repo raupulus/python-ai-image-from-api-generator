@@ -5,7 +5,6 @@ import openai
 import requests
 from dotenv import load_dotenv
 from time import sleep
-from Models.RoleSelector import RoleSelector
 import json
 import re
 
@@ -19,7 +18,7 @@ class Gpt:
     current_prompt_data = None
 
 
-    def __init__(self, model = "gpt-3.5-turbo-instruct"):
+    def __init__(self, role, model = "gpt-3.5-turbo-instruct"):
         """
         Args:
             model (str): Modelo de generación de texto.
@@ -39,7 +38,7 @@ class Gpt:
 
         self.model = model
 
-        self.role = RoleSelector()
+        self.role = role
 
     def add_tune(self, name):
         """
@@ -183,7 +182,8 @@ class Gpt:
             .replace(r"\t", "") \
             .replace(r"\r", "") \
             .replace(r"\`", "") \
-            .replace(r"\.", ' ') \
+            .replace(r"\.", '') \
+            .replace(r'.', '') \
             .replace(r"\>", "") \
             .replace(r"\/", "") \
             .replace(r"\s*", ' ') \
@@ -227,8 +227,8 @@ class Gpt:
                     if isinstance(metatags, list) and len(metatags) > 0:
                         metatags = ",".join(metatags)
 
-                    title = re.sub('\W+\s','', new_prompt_data["title"]).replace(r"\:", ' ')
-                    description = re.sub('\W+\s','', new_prompt_data["description"])
+                    title = re.sub('\W+\s\:','', new_prompt_data["title"]).replace(r':', '').replace(r'-', ' ')
+                    description = re.sub('\W+\s\-','', new_prompt_data["description"]).replace(r':', ' ')
 
                     new_prompt = title + ", " + description + ", " + metatags
 
@@ -246,6 +246,7 @@ class Gpt:
 
         if self.DEBUG:
             print("new_prompt: ", new_prompt)
+            print("")
             print("new_prompt_data: ", new_prompt_data)
 
         return {

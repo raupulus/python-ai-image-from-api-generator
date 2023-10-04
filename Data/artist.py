@@ -3,6 +3,15 @@ def getData():
     return {
         "description": "Put yourself in the role of a professional graphic design and painting artist",
         "file": "artist", ## Archivo dentro del directorio "tuning"
+        "params": { # Parámetros para configurar las peticiones api a Stable Diffusion
+            "model": "sd_v2.1_768_v_f16.ckpt",
+            "steps": 50,
+            "cfg_scale": 6,
+            "denoising_strength": 1,
+            "sampler_index": "Euler a",
+            "restore_faces": False,
+            "negative_prompt": "",
+        },
         "scenes": [
             "street", "city", "nature", "landscape", "watercolor", "street", "mountain", "beach",  "forest", "sunset", "architecture", "wildlife", "portrait", "macro", "night", "urban", "cloudscape", "seascape", "countryside", "industrial", "vintage", "abstract", "underwater", "aerial", "desert", "park", "winter", "spring", "summer", "fall", "autumn", "rainforest", "lake", "river", "ocean", "cave", "alley", "fireworks", "star", "snow", "reflection", "bridge", "farm", "jungle", "village"
         ],

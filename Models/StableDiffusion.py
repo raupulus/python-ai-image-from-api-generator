@@ -7,6 +7,8 @@ import base64
 from PIL import Image
 from dotenv import load_dotenv
 import openai
+import random
+from time import sleep
 
 load_dotenv()
 
@@ -23,21 +25,43 @@ class StableDiffusion:
     # Ruta hacia el lote de imágenes actual
     current_full_path = 'output/lote'
 
+    # Array con las semillas generadas
+    seeds = []
+
     # Indica si está ocupada la instancia trabajando con la api
     is_busy = False
 
-    def __init__(self, model = "stable_diffusion2.15", debug = False):
+    def __init__(self, role, debug = False):
         """
         model (str): Modelo de generación de imágenes.
         debug (bool): Indica si se debe imprimir información de depuración.
         """
 
-        self.model = model
         self.DEBUG = debug
+        self.role = role
 
         self.url = os.getenv("STABLE_DIFFUSION_URL")
 
-    def generate_request(self, prompt, size = "128x128", steps = 20):
+        ## Parámetros para configurar la petición api
+        self.params = self.role.get_params()
+
+    def get_seeds(self):
+        """
+        Devuelve las semillas generadas.
+        Returns:
+            list: Las semillas generadas.
+        """
+        return self.seeds
+
+    def get_params(self):
+        """
+        Devuelve los parámetros para la petición api.
+        Returns:
+            dict: Los parámetros para la petición api.
+        """
+        return self.params
+
+    def generate_request(self, prompt, size = "960x540"):
         """
         Prepara y realiza la petición a la API de Stable Diffusion para generar imágenes.
         Args:
@@ -45,7 +69,6 @@ class StableDiffusion:
             quantity (int): Cantidad de imágenes a generar.
             size (str): Tamaño de las imágenes a generar.
             path (str): Ruta hacia el directorio donde se guardarán las imágenes.
-            steps (int): Cantidad de pasos de la generación de imágenes.
         Returns:
             None.
         Raises:
@@ -57,30 +80,76 @@ class StableDiffusion:
         width = size.split("x")[0]
         height = size.split("x")[1]
 
+        current_seed = random.randint(0, 2**32 - 1)
+
         payload = {
             "prompt": prompt,
-            "steps": steps,
-            "seed": -1,
-            "width": width,
-            "height": height,
-            "send_images": True,
-            "sampler_index": "DPM++ 2M Karras",
+            "negative_prompt": self.params.get("negative_prompt"),
+            #"styles": [""],
+            "model": self.params.get("model"), # 'sd_v2.1_768_v_f16.ckpt', 'realistic_vision_v3.0_q6p_q8p.ckpt',
+            "steps": int(self.params.get("steps")),
+            "cfg_scale": float(self.params.get("cfg_scale")),
+            "seed": current_seed,
+            "width": int(width),
+            "height": int(height),
+            "sampler_index": self.params.get("sampler_index"), # "DPM++ 2M Karras"
+            "restore_faces": bool(self.params.get("restore_faces")),
+            "batch_size": 1,
+            "n_iter": 1,
+            "denoising_strength": float(self.params.get("denoising_strength")),
+            "refiner_model": "sd_xl_refiner_1.0_f16.ckpt",
+            #"seed": 479748350
+            #"seed_mode": "NVIDIA GPU Compatible"
+            #"save_images": False,
+            #"send_images": True,
+            #"hr_scale": 4,
+            #"hr_upscaler": "R-ESRGAN 4x+",
+            #"hr_second_pass_steps": 0,
+            #"hr_resize_x": 0,
+            #"hr_resize_y": 0,
+            #"hr_checkpoint_name": "string",
+            #"hr_sampler_name": "string",
+            #"hr_prompt": "",
+            #"hr_negative_prompt": "",
+
         }
 
-        try:
-            response = requests.post(url=f'{url}/sdapi/v1/txt2img', json=payload)
+        if self.DEBUG:
+            print("")
+            print("Generando imagen...")
 
-            if self.DEBUG:
-                print("")
-                print("Respuesta de la request:")
-                print("http_status: ", response.status_code)
-                print("Contenido: ", response.text)
+        response = requests.post(url=f'{url}/sdapi/v1/txt2img', json=payload)
 
-            self.download_image(response.json())
-        except Exception as e:
-            print(e)
+        if self.DEBUG:
+            print("")
+            print("Respuesta de la request:")
+            print("http_status: ", response.status_code)
+            print("Contenido: ", response.text)
 
-    def generate_images(self, prompt, quantity = 1, size = "256x256", path = None, steps = 20):
+        response_json =  response.json()
+
+        self.download_image(response_json)
+
+        if self.DEBUG and response_json.get('info'):
+            print("")
+            print("Información recibida para la imagen generada:")
+            print(response_json.info)
+
+        if self.DEBUG and response_json.get('parameters'):
+            print("")
+            print("Parámetros recibidos para la imagen generada:")
+            print(response_json.parameters)
+
+        ## Elimino la imagen del objeto json para mostrar el resto de datos al depurar
+        if self.DEBUG:
+            del response_json['images']
+
+            print(f"Otros parámetros recibidos para la imagen generada: {response_json}")
+
+        #current_seed = response_json.parameters['seed']
+        self.seeds.append(current_seed)
+
+    def generate_images(self, prompt, quantity = 1, size = "256x256", path = None):
         """
         Prepara y realiza la petición a la API de Stable Diffusion para generar imágenes.
         Args:
@@ -101,6 +170,8 @@ class StableDiffusion:
         else:
             name = os.urandom(2).hex() + "-" +path
 
+        self.params = self.role.get_params()
+        self.seeds = []
         self.current_groupname = name
 
         script_path = os.getcwd()
@@ -117,11 +188,28 @@ class StableDiffusion:
         self.current_total = quantity
 
         pending_quantity = quantity
+        errors = 0
 
         while pending_quantity >= 1:
             pending_quantity -= 1
 
-            self.generate_request(prompt, size = size)
+            ## Previene errores en bucle, si en 5 intentos no genera imagen hay que revisar algo.
+            if errors >= 5:
+                print("Ha ocurrido un error al generar la imagen y no se puede continuar")
+
+                exit(1)
+
+            try:
+                self.generate_request(prompt, size = size)
+
+                errors = 0
+            except Exception as e:
+                print("Ha ocurrido un error al generar la imagen")
+                print(e)
+                print("Intentando de nuevo en 3 segundos...")
+                pending_quantity += 1
+                errors += 1
+                sleep(3)
 
         self.is_busy = False
 
@@ -139,21 +227,14 @@ class StableDiffusion:
         name = self.current_groupname
         image_name = str(self.current_pos) + ".png"
 
-        try:
+        image = Image.open(io.BytesIO(base64.b64decode(json['images'][0])))
+        image.save(full_path + "/" + image_name)
 
-            image = Image.open(io.BytesIO(base64.b64decode(json['images'][0])))
-            image.save(full_path + "/" + image_name)
+        self.current_pos += 1
 
-            self.current_pos += 1
-
-            if self.DEBUG:
-                print("")
-                print("Downloading image: " + image_name)
-                print("Total: " + str(self.current_total))
-                print("Pos: " + str(self.current_pos))
-                print("Group: " + name)
-                print("Path: " + full_path)
-
-        except Exception as e:
-            print("An error occured")
-            print(e)
+        if self.DEBUG:
+            print("")
+            print("Downloading image: " + image_name)
+            print(f"Generadas: {str(self.current_pos)} de {str(self.current_total)}")
+            print("Group: " + name)
+            print("Path: " + full_path)

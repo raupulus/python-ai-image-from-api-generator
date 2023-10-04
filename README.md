@@ -30,7 +30,8 @@ Copia el archivo **.env.example** a **.env** y rellena los datos para conectar a
 Una vez tengas las variables de entorno seteadas, puedes ejecutar el script de la siguiente forma para generar 10 imágenes a 256x256 con Stable Diffusion:
 
 ```bash
-python main.py 10 256x256 --stable-diffusion
+python main.py 10 1024x576 --stable-diffusion
+
 ```
 
 Y en este ejemplo usando la api de OpenAi con Dall-e:
@@ -73,4 +74,6 @@ Si ejecutamos varias veces el comando, los datos se van añadiendo al archivo si
 
 ## Tareas pendientes -> TODO
 
+- [] Añadir tipos de renders en los proveedores de datos para los roles (pixar, octane, unity...)
+- [] Dividir proveedores de datos para distinguir sobre todo en fotografías el realismo (quitar 2d, 3d, renders...), animales y personas (prevenir deformaciones, sobre todo de cara). Es decir: Crear varios provider de fotografos para personas/animales/paisajes/general
 - [] Implementar entorno virtual para python
