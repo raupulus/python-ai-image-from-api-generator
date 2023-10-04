@@ -1,14 +1,16 @@
 #! /usr/bin/env python
 def getData():
     return {
-        "description": "Put yourself in the role of a professional graphic design and painting artist",
-        "file": "artist", ## Archivo dentro del directorio "tuning"
+        "description": "Put yourself in the role of an artist who designs monsters, already invented mythological and legendary beings such as dragons, ogres, devils, demons, yeti, aliens, giant spiders, dinosaurs... but also creates new beings",
+        "file": "artist_monster", ## Archivo dentro del directorio "tuning"
         "params": { # Parámetros para configurar las peticiones api a Stable Diffusion
-            "model": "sd_v2.1_768_v_f16.ckpt",
+            #"model": "sd_v2.1_768_v_f16.ckpt",
+            "model": "realistic_vision_v3.0_q6p_q8p.ckpt",
             "steps": 50,
             "cfg_scale": 4,
             "denoising_strength": 1,
-            "sampler_index": "Euler a",
+            #"sampler_index": "Euler a",
+            "sampler_index": "DPM++ 2M Karras",
             "restore_faces": False,
             "negative_prompt": "",
         },
@@ -55,7 +57,7 @@ def getData():
             "R.A. Salvatore", "Terry Pratchett", "Piers Anthony", "Raymond E. Feist", "Terry Brooks", "Margaret Atwood",
             "Ken Follett", "Orson Scott Card", "Poul Anderson", "Larry Niven", "Nancy A. Collins", "Graham Masterton",
             "Richard Matheson", "John Ajvide Lindqvist", "Peter Benchley", "Dan Simmons", "Algernon Blackwood", "John Wyndham",
-            "Clifford D. Simak", "Mikhail Bulgakov", "Josef Nesvadba", "Lucius Shepard", "James Herbert", "Richard Adams"
+            "Clifford D. Simak", "Mikhail Bulgakov", "Josef Nesvadba", "Lucius Shepard", "James Herbert", "Richard Adams", "Leonardo DaVinci", "D&D", "Terry Richardson"
         ],
         "tags": [
             "diabolical", "sinister", "terrifying", "angelic", "dramatic", "demonic", "deformed", "impressive", "enormous",
@@ -78,7 +80,7 @@ def getData():
             "elegantly apocalyptic", "spellbindingly otherworldly", "awe-inspiringly nightmarish", "bewilderingly angelic",
             "majestically surreal", "captivatingly malevolent", "sublimely bewitching", "awe-inspiringly enchanting",
             "elegantly spellbinding", "captivatingly monstrous", "bewilderingly nightmarish", "awe-inspiringly diabolic",
-            "spellbindingly mystical", "majestically epic", "sublimely demonic", "bewilderingly ethereal", "awe-inspiringly fantastic"
+            "spellbindingly mystical", "majestically epic", "sublimely demonic", "bewilderingly ethereal", "awe-inspiringly fantastic", "artstation"
         ],
         "elements": [
             "weapons", "claws", "tentacles", "wings", "mutant", "rock", "fire", "wind", "snow", "fangs", "armor", "horns", "scales",
@@ -101,7 +103,7 @@ def getData():
             "ancestral curses", "ancient ruins", "cursed landscapes", "sorcerous duels", "mythical creatures", "dark prophecies", "strange phenomena",
             "cursed cities", "enchanted realms", "horrifying revelations", "cryptic symbols", "cosmic forces", "mythical relics", "enchanted woods",
             "time-worn scrolls", "arcane knowledge", "fateful choices", "ethereal landscapes", "endless quests", "monstrous adversaries",
-            "time-bending artifacts", "enchanted castles", "haunting echoes", "sorcerous incantations", "legendary battles", "otherworldly beings"
+            "time-bending artifacts", "enchanted castles", "haunting echoes", "sorcerous incantations", "legendary battles", "otherworldly beings", "tree monster"
         ],
         "renders": [
             "Pixar", "Octane", "Blender", "Arnold", "V-Ray", "Mental Ray", "Redshift", "Corona",

@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 import Data.photographer as data_photographer
 import Data.artist as data_artist
+import Data.artist_monster as data_artist_monster
 
 load_dotenv()
 
@@ -17,6 +18,7 @@ class RoleSelector:
         self.roles_tuning = {
             "photographer": data_photographer.getData(),
             "artist": data_artist.getData(),
+            "artist_monster": data_artist_monster.getData(),
         }
 
         # Establezco un role aleatorio al instanciarse
