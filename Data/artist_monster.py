@@ -5,14 +5,15 @@ def getData():
         "file": "artist_monster", ## Archivo dentro del directorio "tuning"
         "params": { # Parámetros para configurar las peticiones api a Stable Diffusion
             #"model": "sd_v2.1_768_v_f16.ckpt",
-            "model": "realistic_vision_v3.0_q6p_q8p.ckpt",
-            "steps": 50,
+            #"model": "realistic_vision_v3.0_q6p_q8p.ckpt",
+            "model": "realistic_vision__v5_f16.ckpt",
+            "steps": 70,
             "cfg_scale": 4,
             "denoising_strength": 1,
-            #"sampler_index": "Euler a",
-            "sampler_index": "DPM++ 2M Karras",
+            "sampler_index": "Euler a",
+            #"sampler_index": "DPM++ 2M Karras",
             "restore_faces": False,
-            "negative_prompt": "",
+            "negative_prompt": "signature, signed, letters, text",
         },
         "scenes": [
             "cave", "forest", "mountain", "underground cave", "underwater cave", "abyss", "desert", "swamp", "ruined city",

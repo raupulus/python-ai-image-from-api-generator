@@ -82,6 +82,11 @@ class StableDiffusion:
 
         current_seed = random.randint(0, 2**32 - 1)
 
+        render = self.role.get_render()
+
+        if render:
+            prompt += f" {render}"
+
         payload = {
             "prompt": prompt,
             "negative_prompt": self.params.get("negative_prompt"),

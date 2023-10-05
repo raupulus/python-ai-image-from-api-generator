@@ -5,13 +5,14 @@ def getData():
         "description": "Put yourself in the role of a professional photographer",
         "file": "photographer", ## Archivo dentro del directorio "tuning"
         "params": { # Parámetros para configurar las peticiones api a Stable Diffusion
-            "model": "realistic_vision_v3.0_q6p_q8p.ckpt",
+            #"model": "realistic_vision_v3.0_q6p_q8p.ckpt",
+            "model": "realistic_vision__v5_f16.ckpt",
             "steps": 60,
             "cfg_scale": 5,
             "denoising_strength": 0.4,
             "sampler_index": "DPM++ 2M Karras",
             "restore_faces": False,
-            "negative_prompt": "(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime:1.4), text, close up, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck",
+            "negative_prompt": "(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime:1.4), text, close up, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck,signature, signed, letters, text",
         },
         "scenes": [
             "street", "city", "nature", "landscape", "watercolor", "street", "mountain", "beach",  "forest", "sunset", "architecture", "wildlife", "portrait", "macro", "night", "urban", "cloudscape", "seascape", "countryside", "industrial", "vintage", "abstract", "underwater", "aerial", "desert", "park", "winter", "spring", "summer", "fall", "autumn", "rainforest", "lake", "river", "ocean", "cave", "alley", "fireworks", "star", "snow", "reflection", "bridge", "farm", "jungle", "village"
@@ -53,5 +54,8 @@ def getData():
             "education", "school", "classroom", "learning", "student", "teacher",
             "family", "parenting", "children", "relationship", "love", "friendship",
             "community", "people", "diversity", "culture", "celebration", "holiday", "tradition", "festive"
-        ]
+        ],
+        #"renders": [
+        #    '–ar 16:9', "4k", "8k", "f10", "ISO 100", "200mm", "-ar 3:2", "-uplight", "-v 4", "-q 4", "-c 60", "--q 5", "hdr"
+        #],
     }

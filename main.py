@@ -98,6 +98,7 @@ seedsString = ", ".join(str(x) for x in seeds)
 ## Información para archivo JSON
 jsonInfo = {
     "ai": ai,
+    "role": role.role,
     "title": title,
     "description": description,
     "metatags": metatagsList,

@@ -57,6 +57,16 @@ class RoleSelector:
 
         return role
 
+    def get_render(self):
+        """
+        Devuelve el render del role actual.
+
+        Returns:
+            str|None: El render del role actual.
+        """
+
+        return self.roles_tuning[self.role].get("render", None)
+
     def get_prompts(self):
         """
         Devuelve todos los prompts para el role actual.
@@ -75,10 +85,10 @@ class RoleSelector:
         tags = random.choice(self.roles_tuning[self.role]["tags"])
         element = random.choice(self.roles_tuning[self.role]["elements"])
 
-        first_prompt = f"{role_description} similar to the author \"{author}\" . Generate me a json that contains the fields: title, description, metatags. You should focus on describing this scene: {scene}. In the described scene, this element should appear: {element}. Some tags to keep in mind when describing the title and scene: {tags}. The title should be a few words (between 7 and 25 words) and oncise. The description should be moderately detailed and contain between 40 and 400 characters in plain text. The metatags will be a comma-separated list with a maximum of 10 words containing the most relevant information for the content described. The response cannot contain anything other than a json object. The json content must be in English."
+        first_prompt = f"{role_description} inspired by author \"{author}\" . Generate me a json that contains the fields: title, description, metatags. You should focus on describing this scene: {scene}. In the described scene, this element should appear: {element}. Some tags to keep in mind when describing the title and scene: {tags}. The title should be a few words (between 7 and 25 words) and oncise. The description should be moderately detailed and contain between 40 and 400 characters in plain text. The metatags will be a comma-separated list with a maximum of 10 words containing the most relevant information for the content described. The response cannot contain anything other than a json object. The json content must be in English."
 
 
-        additional_text = f"The content must adapt to the following description, Type of scene: {scene}. Work similar to those of the author suggestion: {author}. You must include these tags in the description: {tags}. Must include: {element}."
+        additional_text = f"The content must adapt to the following description, Type of scene: {scene}. Suggestion inspired by author: {author}. You must include these tags in the description: {tags}. Must include: {element}."
 
         prompts = []
 
@@ -98,10 +108,10 @@ class RoleSelector:
             #print(prompts)
             print("")
             print(f"Role Actual: {self.role}")
-            print(f"scene: {scene}")
-            print(f"author: {author}")
-            print(f"tags: {tags}")
-            print(f"element: {element}")
+            print(f"Scene: {scene}")
+            print(f"Inspired by the author: {author}")
+            print(f"Tags: {tags}")
+            print(f"Element: {element}")
             print("")
 
         return prompts

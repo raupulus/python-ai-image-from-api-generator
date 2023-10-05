@@ -77,3 +77,4 @@ Si ejecutamos varias veces el comando, los datos se van añadiendo al archivo si
 - [] Añadir tipos de renders en los proveedores de datos para los roles (pixar, octane, unity...)
 - [] Dividir proveedores de datos para distinguir sobre todo en fotografías el realismo (quitar 2d, 3d, renders...), animales y personas (prevenir deformaciones, sobre todo de cara). Es decir: Crear varios provider de fotografos para personas/animales/paisajes/general
 - [] Implementar entorno virtual para python
+- [] Implementar personalización de modelos para cada data provider en los roles usando variables de entorno. La idea es poder modificar este parámetro sin editar archivos con seguimientos en git tal como se hace actualmente. En este momento para cambiar un modelo enviado a la api txt2img hay que editar su archivo dentro del directorio "Data" y cambiar el valor de "model" en el proveedor.

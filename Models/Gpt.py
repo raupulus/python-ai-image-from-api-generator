@@ -28,7 +28,7 @@ class Gpt:
 
         self.DEBUG = os.getenv("DEBUG");
 
-        self.current_prompt = "an elephant bathing"
+        self.current_prompt = ""
 
         openai.api_key = os.getenv("API_KEY_OPENAI")
         openai.organization = os.getenv("ORGANIZATION_OPENAI")
