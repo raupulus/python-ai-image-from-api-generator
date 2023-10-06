@@ -97,22 +97,32 @@ seedsString = ", ".join(str(x) for x in seeds)
 
 ## Información para archivo JSON
 jsonInfo = {
+    "batch_id": os.urandom(16).hex(), # Genero un ID aleatorio para el archivo JSON, con esto se puede identificar para asociar luego vídeo tras subir a mi web api y youtube
     "ai": ai,
     "role": role.role,
     "title": title,
     "description": description,
     "metatags": metatagsList,
-    "size": size,
     "prompt": prompt,
+    "size": size,
     "quantity": quantity,
+    "model": params.get("model", "Does not apply"),
+    "steps": params.get("steps", "Does not apply"),
+    "cfg_scale": params.get("cfg_scale", "Does not apply"),
+    "denoising_strength": params.get("denoising_strength", "Does not apply"),
+    "sampler_index": params.get("sampler_index", "Does not apply"),
+    "restore_faces": params.get("restore_faces", "Does not apply"),
+    "negative_prompt": params.get("negative_prompt", "Does not apply"),
     "seeds": seeds,
+    "resizer": "Real-ESRGAN x4",
+    "refiner_model": "sd_xl_refiner_1.0_f16.ckpt",
 }
 
 ## Mezclo el archivo JSON con los parámetros de configuración
 jsonInfo.update(params)
 
 ## Información para archivo markdown
-stringInfoMd = f"# Info\n\nAI: {ai}\nTitle: {title}\nNumber of images: {quantity}\n\n## Search Description\n\n{prompt}\n\n## Tags\n\n{metatags}\n\n{hashtags}\n\n# Settings\n\nModel: {params.get('model', 'Does not apply')}\nSteps: {params.get('steps', 'Does not apply')}\nCfg Scale: {params.get('cfg_scale', 'Does not apply')}\nDenoising Strength: {params.get('denoising_strength', 'Does not apply')}\nSampler Index: {params.get('sampler_index', 'Does not apply')}\nRestore Faces: {params.get('restore_faces', 'Does not apply')}\n\n## Negative Prompt\n\n{params.get('negative_prompt', 'Does not apply')}\n\n## Seeds\n\n{seedsString}\n"
+stringInfoMd = f"\nAI: {ai}\nTitle: {title}\nNumber of images: {quantity}\n\n## Prompt\n\n{prompt}\n\n## Tags\n\n{metatags}\n\n{hashtags}\n\n## Settings\n\nModel: {params.get('model', 'Does not apply')}\nSize: {size}\nSteps: {params.get('steps', 'Does not apply')}\nCfg Scale: {jsonInfo.get('cfg_scale')}\nDenoising Strength: {jsonInfo.get('denoising_strength')}\nSampler Index: {jsonInfo.get('sampler_index')}\nRestore Faces: {jsonInfo.get('restore_faces')}\n\n## Negative Prompt\n\n{jsonInfo.get('negative_prompt')}\n\n## Seeds (in order)\n\n{seedsString}\n"
 
 infoMdFile = path + "/info.md"
 infoJsFile = path + "/info.json"
