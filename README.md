@@ -31,7 +31,6 @@ Una vez tengas las variables de entorno seteadas, puedes ejecutar el script de l
 
 ```bash
 python main.py 10 1024x576 --stable-diffusion
-
 ```
 
 Y en este ejemplo usando la api de OpenAi con Dall-e:

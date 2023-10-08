@@ -150,12 +150,8 @@ with open("historical.log", "a") as file:
 
 
 if API_UPLOAD:
-
     api = Api()
-    ## TODO: Crear modelo para subir a la api
-    ## Para crear galería enviamos el json de la variable "jsonInfo"
-    ## La api para subir imágenes envía id de la colección en ruta, "order" como parámetro
-    pass
 
+    api.directoryUpload(jsonInfo, path)
 
 exit(0)
