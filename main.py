@@ -4,6 +4,7 @@ import json
 import argparse
 from dotenv import load_dotenv
 from Models.Gpt import Gpt
+from Models.Api import Api
 from Models.DalleOpenAi import DalleOpenAi
 from Models.RoleSelector import RoleSelector
 from Models.StableDiffusion import StableDiffusion
@@ -11,6 +12,7 @@ from Models.StableDiffusion import StableDiffusion
 load_dotenv()
 
 DEBUG = os.getenv("DEBUG")
+API_UPLOAD = os.getenv("API_UPLOAD")
 
 ## Preparo parámetros recibidos por consola
 parser = argparse.ArgumentParser(description="Just an example", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -102,7 +104,7 @@ jsonInfo = {
     "role": role.role,
     "title": title,
     "description": description,
-    "metatags": metatagsList,
+    "tags": metatagsList,
     "prompt": prompt,
     "size": size,
     "quantity": quantity,
@@ -145,5 +147,15 @@ with open(imagesGeneratedFile, "w") as file:
 ## Añado evento al log histórico
 with open("historical.log", "a") as file:
     file.write(f"\nSe han generado {quantity} imágenes desde la api {ai} con el prompt: {prompt}")
+
+
+if API_UPLOAD:
+
+    api = Api()
+    ## TODO: Crear modelo para subir a la api
+    ## Para crear galería enviamos el json de la variable "jsonInfo"
+    ## La api para subir imágenes envía id de la colección en ruta, "order" como parámetro
+    pass
+
 
 exit(0)
