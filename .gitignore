@@ -164,4 +164,3 @@ cython_debug/
 env
 env.py
 *.log
-/test_api.py
