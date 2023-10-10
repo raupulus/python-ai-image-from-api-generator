@@ -3,6 +3,9 @@
 import tweepy
 import os
 from dotenv import load_dotenv
+from functions import image_resize
+import tempfile
+import shutil
 
 load_dotenv()
 
@@ -40,32 +43,37 @@ class Twitter:
 
     def post_tweet(self, jsonInfo, path, max_images = 4):
 
-        title = jsonInfo['title'][:230] + "\nMore Seeds: https://aidyslexic.raupulus.dev/" # Max 280!!!
+        title = jsonInfo['title'][:180] + "\nMore Seeds: https://aidyslexic.raupulus.dev\n\n#StableDiffusion #ai #ia #ArtificialIntelligence" # Max 280!!!
 
         max_images = min(max_images, 4)
 
         images = []
 
-        ## Busco las imágenes en el path indicado
+        # Creo un directorio temporal (Para usar imágenes redimensionadas, las originales a veces se pasan de tamaño)
+        temp_dir = tempfile.mkdtemp()
+
+        ## Busco las imágenes en el path indicado y las redimensiono a máximo 1920 de ancho o alto
         for filename in os.listdir(path):
             if len(images) == max_images:
                 break
 
             if filename.endswith(".png"):
-                images.append(path + "/" + filename)
+                new_image = image_resize(image_path=path + "/" + filename, output_path=temp_dir)
+                #images.append(path + "/" + filename)
+                images.append(new_image)
 
         if (len(images) > 1):
-            # Inicializa una lista para almacenar los IDs de medios
+            # Inicializo lista para almacenar los IDs de medios
             media_ids = []
 
-            # Configura tus credenciales de Twitter
+            # Configuro credenciales de Twitter para ambas versiones de la API
             client_v1 = self.get_twitter_conn_v1()
             client_v2 = self.get_twitter_conn_v2()
 
-            # Carga las imágenes y obtiene sus IDs de medios
+            # Cargo las imágenes y obtiengo sus IDs de medios
             for image in images:
                 try:
-                    # Carga la imagen y almacena su ID
+                    # Cargo la imagen y almaceno su ID
                     media = client_v1.media_upload(filename=image)
                     media_ids.append(media.media_id)
 
@@ -73,11 +81,13 @@ class Twitter:
                 except Exception as e:
                     print(f'Error al cargar la imagen {image}: {str(e)}')
 
-            # Publica un tweet con las imágenes cargadas
             try:
-                # Publica el tweet con la imagen
+                # Publica un tweet con las imágenes cargadas
                 client_v2.create_tweet(text=title, media_ids=media_ids)
 
                 print('Tweet con imagen publicado con éxito.')
             except Exception as e:
                 print(f'Error al publicar el tweet con imágenes: {str(e)}')
+
+        # Borro el directorio temporal y su contenido
+        shutil.rmtree(temp_dir)

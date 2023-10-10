@@ -9,12 +9,14 @@ from Models.DalleOpenAi import DalleOpenAi
 from Models.RoleSelector import RoleSelector
 from Models.StableDiffusion import StableDiffusion
 from Models.Social.Twitter import Twitter
+from Models.Social.Instagram import Instagram
 
 load_dotenv()
 
 DEBUG = os.getenv("DEBUG")
 API_UPLOAD = os.getenv("API_UPLOAD")
 TWITTER_AUTO_PUBLISH = os.getenv("TWITTER_AUTO_PUBLISH")
+INSTAGRAM_AUTO_PUBLISH = os.getenv("INSTAGRAM_AUTO_PUBLISH")
 
 ## Preparo parámetros recibidos por consola
 parser = argparse.ArgumentParser(description="Just an example", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -160,5 +162,11 @@ if API_UPLOAD:
 if TWITTER_AUTO_PUBLISH:
     twitter = Twitter()
     twitter.post_tweet(jsonInfo=jsonInfo, path=path)
+
+## Postear en Instagram
+# if INSTAGRAM_AUTO_PUBLISH:
+#     instagram = Instagram()
+#     instagram.publish(jsonInfo=jsonInfo, path=path)
+
 
 exit(0)
