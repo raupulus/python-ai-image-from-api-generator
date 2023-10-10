@@ -182,6 +182,7 @@ class Gpt:
             .replace(r"\t", "") \
             .replace(r"\r", "") \
             .replace(r"\`", "") \
+            .replace(r"\'", "") \
             .replace(r"\.", '') \
             .replace(r'.', '') \
             .replace(r"\>", "") \

@@ -100,12 +100,13 @@ class Api:
             print(f"Imagen: {filename}")
 
             while not self.addImageToCollection(collection_id, idx, path + "/" + filename):
+                print("Se reintentará la subida de la imagen en 5 segundos")
                 errors += 1
                 sleep(5)
 
                 # Si hay más de 3 errores, salimos del bucle
                 if errors >= max_retries:
-                    print(f"Ha ocurrido más de {max_retries} errores, saliendo de la subida de la colección")
+                    print(f"Ha ocurrido más de {max_retries} errores, descartando esta imagen para la colección")
                     errors = 0
 
                     break

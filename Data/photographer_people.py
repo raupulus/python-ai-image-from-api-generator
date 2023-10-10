@@ -8,7 +8,7 @@ def getData():
             #"model": "realistic_vision_v3.0_q6p_q8p.ckpt",
             "model": "realistic_vision__v5_f16.ckpt",
             "steps": 90,
-            "cfg_scale": 6,
+            "cfg_scale": 5,
             "denoising_strength": 0.5,
             "sampler_index": "DPM++ SDE Karras",
             "restore_faces": True,
