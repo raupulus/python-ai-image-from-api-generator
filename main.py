@@ -8,11 +8,13 @@ from Models.Api import Api
 from Models.DalleOpenAi import DalleOpenAi
 from Models.RoleSelector import RoleSelector
 from Models.StableDiffusion import StableDiffusion
+from Models.Social.Twitter import Twitter
 
 load_dotenv()
 
 DEBUG = os.getenv("DEBUG")
 API_UPLOAD = os.getenv("API_UPLOAD")
+TWITTER_AUTO_PUBLISH = os.getenv("TWITTER_AUTO_PUBLISH")
 
 ## Preparo parámetros recibidos por consola
 parser = argparse.ArgumentParser(description="Just an example", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -148,10 +150,15 @@ with open(imagesGeneratedFile, "w") as file:
 with open("historical.log", "a") as file:
     file.write(f"\nSe han generado {quantity} imágenes desde la api {ai} con el prompt: {prompt}")
 
-
+## Postear en mi web
 if API_UPLOAD:
     api = Api()
 
     api.directoryUpload(jsonInfo, path)
+
+## Postear en twitter
+if TWITTER_AUTO_PUBLISH:
+    twitter = Twitter()
+    twitter.post_tweet(jsonInfo=jsonInfo, path=path)
 
 exit(0)
