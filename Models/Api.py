@@ -32,18 +32,29 @@ class Api:
             jsonInfo (dict): Diccionario con los datos de la colección
         """
 
-        response = requests.post(url=self.url_create, json=jsonInfo, headers=self.headers)
+        errors = 0
+        max_retries = 5
+
+        while errors < max_retries:
+            try:
+                response = requests.post(url=self.url_create, json=jsonInfo, headers=self.headers)
+                break
+            except Exception as e:
+                print("Error al crear la colección")
+                print(e)
+                errors += 1
+                sleep(5)
 
         if response.status_code != 200:
             print("API Error al crear la colección")
             print("API http_status: ", response.status_code)
             print("API Contenido: ", response.text)
 
-            return
+            return None
 
         response_json = response.json()
 
-        return response_json['data']['collection_id']
+        return response_json['data']
 
     def addImageToCollection(self, collection_id, order, image_path):
 
@@ -59,7 +70,13 @@ class Api:
             "image": image,
         }
 
-        response = requests.post(url=url, json=json, headers=self.headers)
+        try:
+            response = requests.post(url=url, json=json, headers=self.headers, timeout=30)
+        except Exception as e:
+            print("Error al subir imagen en la colección")
+            print(e)
+
+            return False
 
         if response.status_code != 200:
             print("API Error al subir imagen en la colección")
@@ -80,7 +97,19 @@ class Api:
             path (str): Directorio de la colección, ruta absoluta.
         """
 
-        collection_id = self.createCollection(jsonInfo)
+        collection = self.createCollection(jsonInfo)
+
+        if not collection:
+            print(f"Error al crear la colección {jsonInfo['title']}")
+
+            # Añado información al histórico
+            with open("historical.log", "a") as f:
+                f.write(f"\nError al crear la colección: {jsonInfo['title']}\n")
+
+            return None
+
+        collection_id = collection.get('collection_id')
+        link = collection.get('url')
 
         max_retries = 5
         errors = 0
@@ -112,4 +141,7 @@ class Api:
                     break
 
             errors = 0
-            sleep(0.3)
+
+            sleep(1)
+
+        return collection

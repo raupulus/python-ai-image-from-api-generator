@@ -9,7 +9,7 @@ from Models.DalleOpenAi import DalleOpenAi
 from Models.RoleSelector import RoleSelector
 from Models.StableDiffusion import StableDiffusion
 from Models.Social.Twitter import Twitter
-from Models.Social.Instagram import Instagram
+#from Models.Social.Instagram import Instagram
 
 load_dotenv()
 
@@ -19,7 +19,7 @@ TWITTER_AUTO_PUBLISH = os.getenv("TWITTER_AUTO_PUBLISH")
 INSTAGRAM_AUTO_PUBLISH = os.getenv("INSTAGRAM_AUTO_PUBLISH")
 
 ## Preparo parámetros recibidos por consola
-parser = argparse.ArgumentParser(description="Just an example", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser(description="Tool for prompt generator and stable diffusion images creator", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--only-prompts", action="store_true", help="Indica que solo vas a generar prompts y volcarlos a un archivo CSV en modo listado")
 parser.add_argument("--stable-diffusion", action="store_true", help="Usa la API de Stable Diffusion")
 parser.add_argument("--dalle", action="store_true", help="Usa la API de Dall-e")
@@ -152,16 +152,18 @@ with open(imagesGeneratedFile, "w") as file:
 with open("historical.log", "a") as file:
     file.write(f"\nSe han generado {quantity} imágenes desde la api {ai} con el prompt: {prompt}")
 
+api_response = None
+
 ## Postear en mi web
 if API_UPLOAD:
     api = Api()
 
-    api.directoryUpload(jsonInfo, path)
+    api_response = api.directoryUpload(jsonInfo, path)
 
 ## Postear en twitter
 if TWITTER_AUTO_PUBLISH:
     twitter = Twitter()
-    twitter.post_tweet(jsonInfo=jsonInfo, path=path)
+    twitter.post_tweet(jsonInfo=jsonInfo, path=path, link=api_response.get('url') if api_response else None)
 
 ## Postear en Instagram
 # if INSTAGRAM_AUTO_PUBLISH:

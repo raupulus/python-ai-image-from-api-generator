@@ -173,7 +173,7 @@ class StableDiffusion:
         if path is None:
             name = os.urandom(16).hex()
         else:
-            name = os.urandom(2).hex() + "-" +path
+            name = os.urandom(2).hex() + " - " +path
 
         self.params = self.role.get_params()
         self.seeds = []

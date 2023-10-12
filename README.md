@@ -73,6 +73,7 @@ Si ejecutamos varias veces el comando, los datos se van añadiendo al archivo si
 
 ## Tareas pendientes -> TODO
 
+- [] Implementar entrada (inputs/prompts.jsonl) para obtener los datos de aquí en lugar de la api de GPT
 - [] Añadir tipos de renders en los proveedores de datos para los roles (pixar, octane, unity...)
 - [] Dividir proveedores de datos para distinguir sobre todo en fotografías el realismo (quitar 2d, 3d, renders...), animales y personas (prevenir deformaciones, sobre todo de cara). Es decir: Crear varios provider de fotografos para personas/animales/paisajes/general
 - [] Implementar entorno virtual para python

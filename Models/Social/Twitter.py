@@ -41,9 +41,12 @@ class Twitter:
 
         return client
 
-    def post_tweet(self, jsonInfo, path, max_images = 4):
+    def post_tweet(self, jsonInfo, path, max_images = 4, link = None):
 
-        title = jsonInfo['title'][:180] + "\nMore Seeds: https://aidyslexic.raupulus.dev\n\n#StableDiffusion #ai #ia #ArtificialIntelligence" # Max 280!!!
+        link = link or "https://aidyslexic.raupulus.dev"
+        title_added = "\nSee More Seeds: " + link + "\n\n#StableDiffusion #ai #ArtificialIntelligence"
+
+        title = jsonInfo['title'][:276 - len(title_added)] + title_added  # Max 280!!!
 
         max_images = min(max_images, 4)
 
