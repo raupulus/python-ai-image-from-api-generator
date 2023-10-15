@@ -16,7 +16,7 @@ load_dotenv()
 DEBUG = os.getenv("DEBUG")
 API_UPLOAD = os.getenv("API_UPLOAD")
 TWITTER_AUTO_PUBLISH = os.getenv("TWITTER_AUTO_PUBLISH")
-INSTAGRAM_AUTO_PUBLISH = os.getenv("INSTAGRAM_AUTO_PUBLISH")
+#INSTAGRAM_AUTO_PUBLISH = os.getenv("INSTAGRAM_AUTO_PUBLISH")
 
 ## Preparo parámetros recibidos por consola
 parser = argparse.ArgumentParser(description="Tool for prompt generator and stable diffusion images creator", formatter_class=argparse.ArgumentDefaultsHelpFormatter)

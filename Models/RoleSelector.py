@@ -5,6 +5,7 @@ import json
 import os
 from dotenv import load_dotenv
 import Data.photographer as data_photographer
+import Data.photographer_people as data_photographer_people
 import Data.artist as data_artist
 import Data.artist_monster as data_artist_monster
 
@@ -17,6 +18,7 @@ class RoleSelector:
 
         self.roles_tuning = {
             "photographer": data_photographer.getData(),
+            "photographer_people": data_photographer_people.getData(),
             "artist": data_artist.getData(),
             "artist_monster": data_artist_monster.getData(),
         }

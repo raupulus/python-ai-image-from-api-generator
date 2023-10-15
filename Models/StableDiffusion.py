@@ -138,7 +138,7 @@ class StableDiffusion:
         if self.DEBUG and response_json.get('info'):
             print("")
             print("Información recibida para la imagen generada:")
-            print(response_json.info)
+            #print(response_json.info)
 
         if self.DEBUG and response_json.get('parameters'):
             print("")
