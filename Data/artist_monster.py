@@ -14,6 +14,7 @@ def getData():
             "sampler_index": "DPM++ 2M Karras",
             "restore_faces": False,
             "negative_prompt": "signature, signed, letters, text",
+            "extra_prompt": "mdjrny-v4, detailed face, perfect mouth, highly detailed, sharp focus, stunningly beautiful, 8k"
         },
         "scenes": [
             "cave", "forest", "mountain", "underground cave", "underwater cave", "abyss", "desert", "swamp", "ruined city",

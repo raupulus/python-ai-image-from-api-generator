@@ -14,6 +14,7 @@ def getData():
             "sampler_index": "DPM++ 2M Karras",
             "restore_faces": False,
             "negative_prompt": "signature, signed, letters, text",
+            "extra_prompt": "mdjrny-v4, detailed face, perfect mouth, highly detailed, sharp focus, stunningly beautiful, 8k"
         },
         "scenes": [
             "street", "city", "nature", "landscape", "watercolor", "street", "mountain", "beach",  "forest", "sunset", "architecture", "wildlife", "portrait", "macro", "night", "urban", "cloudscape", "seascape", "countryside", "industrial", "vintage", "abstract", "underwater", "aerial", "desert", "park", "winter", "spring", "summer", "fall", "autumn", "rainforest", "lake", "river", "ocean", "cave", "alley", "fireworks", "star", "snow", "reflection", "bridge", "farm", "jungle", "village"
