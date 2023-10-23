@@ -1,5 +1,5 @@
-openai
+openai>=0.28.1
+tweepy>=4.14.0
+pillow>=10.0.0
 python-dotenv
-pillow
-tweepy
 instabot

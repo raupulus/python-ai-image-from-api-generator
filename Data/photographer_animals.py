@@ -8,13 +8,13 @@ def getData():
             #"model": "realistic_vision_v3.0_q6p_q8p.ckpt",
             "model": "realistic_vision__v5_f16.ckpt",
             "steps": 70,
-            "cfg_scale": 5,
+            "cfg_scale": 7,
             "clip_skip": 1,
-            "denoising_strength": 0.35,
+            "denoising_strength": 0.45,
             "sampler_index": "DPM++ 2M Karras",
             "restore_faces": False,
-            "negative_prompt": "people, peoples, signature, signed, letters, text",
-            "extra_prompt": "wildlife photography, animal, detailed face, perfect mouth, highly detailed, sharp focus, 8k, hdr, national geographic, nature"
+            "negative_prompt": "people, peoples, signature, signed, letters, text, lowres, signs, memes, labels, error, mutant, cropped, worst quality, low quality, normal quality, jpeg artifacts, watermark, username, blurry, made by children, caricature, ugly, boring, sketch, lacklustre, repetitive, cropped, facebook, youtube, out of frame, mutilated, tiled, frame, border",
+            "extra_prompt": "wildlife photography, animal, highly detailed, 8k, hdr, national geographic, nature"
         },
         "scenes": [
             "Savannah", "Rainforest", "Jungle", "Desert", "Grassland", "Savanna Grassland", "Wetland", "Swamp",

@@ -33,7 +33,7 @@ def image_resize(image_path, output_path, max_width = 1920, max_height = 1920):
         new_height = int(height * related_aspect)
 
         # Redimensiono la imagen
-        new_image = image.resize((new_width, new_height), Image.ANTIALIAS)
+        new_image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
 
         # Genero un nombre de archivo aleatorio para la imagen temporal redimensionada
         random_name = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
