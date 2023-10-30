@@ -16,11 +16,12 @@ load_dotenv()
 DEBUG = os.getenv("DEBUG")
 API_UPLOAD = os.getenv("API_UPLOAD")
 TWITTER_AUTO_PUBLISH = os.getenv("TWITTER_AUTO_PUBLISH")
-INSTAGRAM_AUTO_PUBLISH = os.getenv("INSTAGRAM_AUTO_PUBLISH")
+#INSTAGRAM_AUTO_PUBLISH = os.getenv("INSTAGRAM_AUTO_PUBLISH")
 
 ## Preparo parámetros recibidos por consola
 parser = argparse.ArgumentParser(description="Tool for prompt generator and stable diffusion images creator", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--only-prompts", action="store_true", help="Indica que solo vas a generar prompts y volcarlos a un archivo CSV en modo listado")
+parser.add_argument("--output-path", default="output", help="Ruta donde se van a guardar los archivos generados")
 parser.add_argument("--stable-diffusion", action="store_true", help="Usa la API de Stable Diffusion")
 parser.add_argument("--dalle", action="store_true", help="Usa la API de Dall-e")
 parser.add_argument("quantity", type=int, help="Cantidad a generar (imágenes o prompts)")
@@ -33,6 +34,8 @@ if DEBUG:
     print("")
     print("Parámetros recibidos por consola:", config)
     print("")
+
+OUTPUT_PATH = config['output_path']
 
 ## Establezco variables de configuración
 quantity = config['quantity']
@@ -169,6 +172,11 @@ if TWITTER_AUTO_PUBLISH:
 # if INSTAGRAM_AUTO_PUBLISH:
 #     instagram = Instagram()
 #     instagram.publish(jsonInfo=jsonInfo, path=path)
+
+
+## Muevo la colección hacia el directorio final
+if OUTPUT_PATH != 'output':
+    os.rename(path, OUTPUT_PATH + "/" + jsonInfo.get('batch_id') + " - " + title)
 
 
 exit(0)

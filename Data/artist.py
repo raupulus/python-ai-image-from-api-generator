@@ -4,16 +4,17 @@ def getData():
         "description": "Put yourself in the role of a professional graphic design and painting artist",
         "file": "artist", ## Archivo dentro del directorio "tuning"
         "params": { # Parámetros para configurar las peticiones api a Stable Diffusion
-            #"model": "sd_v2.1_768_v_f16.ckpt",
+            "model": "sd_v2.1_768_v_f16.ckpt",
             #"model": "realistic_vision_v3.0_q6p_q8p.ckpt",
-            "model": "realistic_vision__v5_f16.ckpt",
-            "steps": 50,
-            "cfg_scale": 3,
+            #"model": "realistic_vision__v5_f16.ckpt",
+            "steps": 80,
+            "cfg_scale": 5,
             "denoising_strength": 1,
-            #"sampler_index": "Euler a",
-            "sampler_index": "DPM++ 2M Karras",
+            "sampler_index": "Euler a",
+            #"sampler_index": "DPM++ 2M Karras",
             "restore_faces": False,
-            "negative_prompt": "signature, signed, letters, text",
+            "negative_prompt": "nudes, naked, naked woman, naked man, signature, signed, letters, text, lowres, signs, memes, labels, error, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, made by children, caricature, sketch, lacklustre, repetitive, cropped, facebook, youtube",
+            "extra_prompt": "elaborated detailed 8k, detailed, 4k 8k 16k gigapixel render, highly detailed, 8k, cinematic HDR SSAO RTX"
         },
         "scenes": [
             "street", "city", "nature", "landscape", "watercolor", "street", "mountain", "beach",  "forest", "sunset", "architecture", "wildlife", "portrait", "macro", "night", "urban", "cloudscape", "seascape", "countryside", "industrial", "vintage", "abstract", "underwater", "aerial", "desert", "park", "winter", "spring", "summer", "fall", "autumn", "rainforest", "lake", "river", "ocean", "cave", "alley", "fireworks", "star", "snow", "reflection", "bridge", "farm", "jungle", "village"

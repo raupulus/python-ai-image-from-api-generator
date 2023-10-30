@@ -129,21 +129,16 @@ class StableDiffusion:
             print("")
             print("Respuesta de la request:")
             print("http_status: ", response.status_code)
-            print("Contenido: ", response.text)
+            #print("Contenido: ", response.text)
 
         response_json =  response.json()
 
         self.download_image(response_json)
 
-        if self.DEBUG and response_json.get('info'):
-            print("")
-            print("Información recibida para la imagen generada:")
-            print(response_json.info)
-
         if self.DEBUG and response_json.get('parameters'):
             print("")
             print("Parámetros recibidos para la imagen generada:")
-            print(response_json.parameters)
+            print(response_json.get('parameters'))
 
         ## Elimino la imagen del objeto json para mostrar el resto de datos al depurar
         if self.DEBUG:

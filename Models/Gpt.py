@@ -245,6 +245,11 @@ class Gpt:
         self.current_prompt = new_prompt
         self.current_prompt_data = new_prompt_data
 
+        role_params = self.role.get_params()
+
+        if role_params.get('extra_prompt'):
+            new_prompt = new_prompt + ", " + role_params.get('extra_prompt')
+
         if self.DEBUG:
             print("new_prompt: ", new_prompt)
             print("")
