@@ -9,13 +9,16 @@ from Models.DalleOpenAi import DalleOpenAi
 from Models.RoleSelector import RoleSelector
 from Models.StableDiffusion import StableDiffusion
 from Models.Social.Twitter import Twitter
+from Models.Social.Telegram import Telegram
 #from Models.Social.Instagram import Instagram
+import asyncio
 
 load_dotenv()
 
 DEBUG = os.getenv("DEBUG")
 API_UPLOAD = os.getenv("API_UPLOAD")
 TWITTER_AUTO_PUBLISH = os.getenv("TWITTER_AUTO_PUBLISH")
+TELEGRAM_AUTO_PUBLISH = os.getenv("TELEGRAM_AUTO_PUBLISH")
 #INSTAGRAM_AUTO_PUBLISH = os.getenv("INSTAGRAM_AUTO_PUBLISH")
 
 ## Preparo parámetros recibidos por consola
@@ -156,17 +159,41 @@ with open("historical.log", "a") as file:
     file.write(f"\nSe han generado {quantity} imágenes desde la api {ai} con el prompt: {prompt}")
 
 api_response = None
+web_link = api_response.get('url') if api_response else None
 
 ## Postear en mi web
 if API_UPLOAD:
     api = Api()
-
     api_response = api.directoryUpload(jsonInfo, path)
 
 ## Postear en twitter
 if TWITTER_AUTO_PUBLISH:
     twitter = Twitter()
-    twitter.post_tweet(jsonInfo=jsonInfo, path=path, link=api_response.get('url') if api_response else None)
+    twitter.post_tweet(jsonInfo=jsonInfo, path=path, link=web_link)
+
+## Postear en Canal de Telegram
+if TELEGRAM_AUTO_PUBLISH:
+    telegram = Telegram()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(telegram.publish(jsonInfo=jsonInfo, path=path, link=web_link))
+
+"""
+jsonInfo = {
+    "title": 'titulo desc',
+    "description": 'descripción test',
+    "tags": ['tag1', 'tag2'],
+}
+
+async def upload():
+    telegram = Telegram()
+    await telegram.publish(jsonInfo=jsonInfo, path='output/test')
+loop = asyncio.get_event_loop()
+loop.run_until_complete(upload())
+
+exit(1)
+"""
+
+
 
 ## Postear en Instagram
 # if INSTAGRAM_AUTO_PUBLISH:

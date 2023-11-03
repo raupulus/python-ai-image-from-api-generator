@@ -7,7 +7,7 @@ def getData():
         "params": { # Parámetros para configurar las peticiones api a Stable Diffusion
             #"model": "realistic_vision_v3.0_q6p_q8p.ckpt",
             "model": "realistic_vision__v5_f16.ckpt",
-            "steps": 90,
+            "steps": 130,
             "cfg_scale": 6,
             "clip_skip": 2,
             "denoising_strength": 0.35,
