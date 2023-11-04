@@ -10,6 +10,7 @@ from Models.RoleSelector import RoleSelector
 from Models.StableDiffusion import StableDiffusion
 from Models.Social.Twitter import Twitter
 from Models.Social.Telegram import Telegram
+from Models.Social.Mastodon import Mastodon
 #from Models.Social.Instagram import Instagram
 import asyncio
 
@@ -19,6 +20,7 @@ DEBUG = os.getenv("DEBUG")
 API_UPLOAD = os.getenv("API_UPLOAD")
 TWITTER_AUTO_PUBLISH = os.getenv("TWITTER_AUTO_PUBLISH")
 TELEGRAM_AUTO_PUBLISH = os.getenv("TELEGRAM_AUTO_PUBLISH")
+MASTODON_AUTO_PUBLISH = os.getenv("MASTODON_AUTO_PUBLISH")
 #INSTAGRAM_AUTO_PUBLISH = os.getenv("INSTAGRAM_AUTO_PUBLISH")
 
 ## Preparo parámetros recibidos por consola
@@ -177,22 +179,13 @@ if TELEGRAM_AUTO_PUBLISH:
     loop = asyncio.get_event_loop()
     loop.run_until_complete(telegram.publish(jsonInfo=jsonInfo, path=path, link=web_link))
 
-"""
-jsonInfo = {
-    "title": 'titulo desc',
-    "description": 'descripción test',
-    "tags": ['tag1', 'tag2'],
-}
+if MASTODON_AUTO_PUBLISH:
+    async def mastodonUpload():
+        mastodon = Mastodon()
+        await mastodon.publish(jsonInfo=jsonInfo, path=path, link=web_link)
 
-async def upload():
-    telegram = Telegram()
-    await telegram.publish(jsonInfo=jsonInfo, path='output/test')
-loop = asyncio.get_event_loop()
-loop.run_until_complete(upload())
-
-exit(1)
-"""
-
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(mastodonUpload())
 
 
 ## Postear en Instagram

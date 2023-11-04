@@ -22,7 +22,7 @@ class Telegram:
 
         link = link or "https://aidyslexic.raupulus.dev"
         title_added = "\nSee More Seeds: " + link + "\n\n#StableDiffusion #ai #ArtificialIntelligence"
-        hashtags = ' '.join(['#' + tag for tag in jsonInfo['tags']])
+        hashtags = ' '.join(['#' + tag.replace(' ', '-') for tag in jsonInfo['tags']])
 
         title = jsonInfo['title'][:300]
         description = jsonInfo['description'][:500]
