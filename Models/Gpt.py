@@ -247,6 +247,12 @@ class Gpt:
 
         role_params = self.role.get_params()
 
+        if role_params.get('before_prompt'):
+            new_prompt = role_params.get('before_prompt') + " " + new_prompt
+
+        if role_params.get('lora') and len(role_params.get('lora')):
+            new_prompt = random.choice(role_params.get('lora')) + " " + new_prompt
+
         if role_params.get('extra_prompt'):
             new_prompt = new_prompt + ", " + role_params.get('extra_prompt')
 

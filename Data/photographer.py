@@ -7,14 +7,15 @@ def getData():
         "params": { # Parámetros para configurar las peticiones api a Stable Diffusion
             #"model": "realistic_vision_v3.0_q6p_q8p.ckpt",
             "model": "realistic_vision__v5_f16.ckpt",
-            "steps": 90,
+            "steps": 30,
             "cfg_scale": 6,
             "clip_skip": 1,
             "denoising_strength": 0.55,
             "sampler_index": "DPM++ 2M Karras",
             "restore_faces": False,
-            "negative_prompt": "nudes, naked, naked woman, naked man, lowres, signs, memes, labels, text, text, error, mutant, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, made by children, caricature, ugly, boring, sketch, lacklustre, repetitive, cropped, (long neck), facebook, youtube, body horror, out of frame, mutilated, tiled, frame, border, porcelain skin, doll like, doll, deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime, text, close up, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck,signature, signed, letters, text",
-            "extra_prompt": "mdjrny-v4, detailed face, perfect mouth, highly detailed, sharp focus, stunningly beautiful, 8k, hdr"
+            "before_prompt": "A DSLR real photography ",
+            "negative_prompt": "nudes, naked, naked woman, naked man, lowres, signs, memes, labels, text, error, mutant, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, made by children, caricature, ugly, boring, sketch, lacklustre, repetitive, (long neck), facebook, youtube, body horror, out of frame, mutilated, tiled, frame, border, porcelain skin, doll like, doll, deformed iris, deformed pupils, semi-realistic, cgi, 2d, 3d, render, cartoon, drawing, anime, close up, duplicate, morbid, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck, signed, letters, (people:1.6), (man:1.5), (woman:1.5)",
+            "extra_prompt": "highly detailed, 8k, hdr"
         },
         "scenes": [
             "street", "city", "nature", "landscape", "watercolor", "street", "mountain", "beach",  "forest", "sunset", "architecture", "wildlife", "portrait", "macro", "night", "urban", "cloudscape", "seascape", "countryside", "industrial", "vintage", "abstract", "underwater", "aerial", "desert", "park", "winter", "spring", "summer", "fall", "autumn", "rainforest", "lake", "river", "ocean", "cave", "alley", "fireworks", "star", "snow", "reflection", "bridge", "farm", "jungle", "village"

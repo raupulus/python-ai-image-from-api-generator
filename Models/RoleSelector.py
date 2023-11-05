@@ -7,8 +7,12 @@ from dotenv import load_dotenv
 import Data.photographer as data_photographer
 import Data.photographer_people as data_photographer_people
 import Data.photographer_animals as data_photographer_animals
+import Data.photographer_food as data_photographer_food
 import Data.artist as data_artist
 import Data.artist_monster as data_artist_monster
+import Data.art_2d_people as data_art_2d_people
+import Data.art_3d_people as data_art_3d_people
+import Data.art_fantasy as data_art_fantasy
 
 load_dotenv()
 
@@ -18,11 +22,15 @@ class RoleSelector:
         self.DEBUG = os.getenv("DEBUG")
 
         self.roles_tuning = {
-            "photographer": data_photographer.getData(),
-            "photographer_people": data_photographer_people.getData(),
-            "photographer_animals": data_photographer_animals.getData(),
-            "artist": data_artist.getData(),
-            "artist_monster": data_artist_monster.getData(),
+            #"photographer": data_photographer.getData(),
+            #"photographer_people": data_photographer_people.getData(),
+            #"photographer_animals": data_photographer_animals.getData(),
+            #"photographer_food": data_photographer_food.getData(),
+            #"artist": data_artist.getData(),
+            #"artist_monster": data_artist_monster.getData(),
+            #"art_2d_people": data_art_2d_people.getData(),
+            #"art_3d_people": data_art_3d_people.getData(),
+            "art_fantasy": data_art_fantasy.getData(),
         }
 
         # Establezco un role aleatorio al instanciarse
