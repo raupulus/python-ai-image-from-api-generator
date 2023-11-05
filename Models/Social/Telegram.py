@@ -52,7 +52,9 @@ class Telegram:
 
                 #bot.send_photo(chat_id=self.CHANNEL_ID, photo=open(imagen_path, 'rb'))
 
-                print(f'Imagenes {images} cargada con éxito.')
+                if self.DEBUG:
+                    #print(f'Imagenes {images} cargada con éxito.')
+                    print(f'Se han publicado {len(images)} imágenes con éxito en Telegram.')
             except Exception as e:
                 print(f'Error al cargar las imagenes {images}: {str(e)}')
 

@@ -52,8 +52,8 @@ class Mastodon:
 
         text = title + "\n\n" + description + title_added
 
-        print(f'Texto a publicar: {text}')
-        print(f'Longitud del text {len(text)}')
+        if self.DEBUG:
+            print(f'Longitud del texto:{len(text)}')
 
         max_images = min(max_images, 4)
 
@@ -80,13 +80,14 @@ class Mastodon:
                     media = self.BOT.media_post(image)
                     media_ids.append(media['id'])
 
-
                 if len(media_ids) > 0:
                     self.BOT.status_post(text, media_ids=media_ids)
 
-                print(f'Imagenes {images} cargada con éxito.')
+                if self.DEBUG:
+                    #print(f'Imagenes {images} cargada con éxito.')
+                    print(f'Se han publicado {len(images)} imágenes con éxito en Mastodon.')
             except Exception as e:
-                print(f'Error al cargar las imagenes {images}: {str(e)}')
+                print(f'Error al cargar las imagenes en Mastodon {images}: {str(e)}')
 
         # Borro el directorio temporal y su contenido
         shutil.rmtree(temp_dir)

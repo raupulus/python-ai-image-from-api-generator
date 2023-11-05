@@ -161,35 +161,37 @@ with open("historical.log", "a") as file:
     file.write(f"\nSe han generado {quantity} imágenes desde la api {ai} con el prompt: {prompt}")
 
 api_response = None
-web_link = api_response.get('url') if api_response else None
 
 ## Postear en mi web
 if API_UPLOAD:
     api = Api()
     api_response = api.directoryUpload(jsonInfo, path)
 
+web_link = api_response.get('url') if api_response else None
+
 ## Postear en twitter
 if TWITTER_AUTO_PUBLISH:
+    print("Compartiendo imágenes en publicación de Twitter...")
     twitter = Twitter()
     twitter.post_tweet(jsonInfo=jsonInfo, path=path, link=web_link)
 
 ## Postear en Canal de Telegram
 if TELEGRAM_AUTO_PUBLISH:
+    print("Compartiendo imágenes en publicación de Telegram...")
     telegram = Telegram()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(telegram.publish(jsonInfo=jsonInfo, path=path, link=web_link))
 
 if MASTODON_AUTO_PUBLISH:
-    async def mastodonUpload():
-        mastodon = Mastodon()
-        await mastodon.publish(jsonInfo=jsonInfo, path=path, link=web_link)
-
+    print("Compartiendo imágenes en publicación de Mastodon...")
+    mastodon = Mastodon()
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(mastodonUpload())
+    loop.run_until_complete(mastodon.publish(jsonInfo=jsonInfo, path=path, link=web_link))
 
 
 ## Postear en Instagram
 # if INSTAGRAM_AUTO_PUBLISH:
+#     print("Compartiendo imágenes en publicación de Instagram...")
 #     instagram = Instagram()
 #     instagram.publish(jsonInfo=jsonInfo, path=path)
 

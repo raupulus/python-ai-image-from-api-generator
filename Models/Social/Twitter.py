@@ -80,7 +80,7 @@ class Twitter:
                     media = client_v1.media_upload(filename=image)
                     media_ids.append(media.media_id)
 
-                    print(f'Imagen {image} cargada con éxito.')
+                    #print(f'Imagen {image} cargada con éxito.')
                 except Exception as e:
                     print(f'Error al cargar la imagen {image}: {str(e)}')
 
@@ -88,7 +88,9 @@ class Twitter:
                 # Publica un tweet con las imágenes cargadas
                 client_v2.create_tweet(text=title, media_ids=media_ids)
 
-                print('Tweet con imagen publicado con éxito.')
+                if self.DEBUG:
+                    #print(f'Imagenes {images} cargada con éxito.')
+                    print(f'Se han publicado {len(images)} imágenes con éxito en Twitter.')
             except Exception as e:
                 print(f'Error al publicar el tweet con imágenes: {str(e)}')
 

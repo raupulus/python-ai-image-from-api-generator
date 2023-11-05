@@ -40,6 +40,10 @@ class Instagram:
 
             # Publicar el álbum
             bot.album_upload(media_ids, caption='Spellbound Dreams in the Enchanted Village')
+
+            #if self.DEBUG:
+                #print(f'Imagenes {images} cargada con éxito.')
+                #print(f'Se han publicado {len(images)} imágenes con éxito en Mastodon.')
         except Exception as e:
             print(f'Error al publicar el tweet con imágenes: {str(e)}')
         finally:
