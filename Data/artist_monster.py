@@ -7,7 +7,7 @@ def getData():
             #"model": "sd_v2.1_768_v_f16.ckpt",
             #"model": "realistic_vision_v3.0_q6p_q8p.ckpt",
             "model": "realistic_vision__v5_f16.ckpt",
-            "steps": 30,
+            "steps": 50,
             "cfg_scale": 6,
             "denoising_strength": 1,
             #"sampler_index": "Euler a",

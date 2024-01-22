@@ -149,7 +149,7 @@ class StableDiffusion:
         #current_seed = response_json.parameters['seed']
         self.seeds.append(current_seed)
 
-    def generate_images(self, prompt, quantity = 1, size = "256x256", path = None):
+    def generate_images(self, prompt, quantity=1, size="256x256", path=None):
         """
         Prepara y realiza la petición a la API de Stable Diffusion para generar imágenes.
         Args:
@@ -188,28 +188,32 @@ class StableDiffusion:
         self.current_total = quantity
 
         pending_quantity = quantity
+
+        ## Control de errores en la generación de imágenes y reintentos.
         errors = 0
+        timeout_next_try = 0 # Tiempo en segundos para próximo intento
 
         while pending_quantity >= 1:
             pending_quantity -= 1
 
-            ## Previene errores en bucle, si en 5 intentos no genera imagen hay que revisar algo.
-            if errors >= 5:
-                print("Ha ocurrido un error al generar la imagen y no se puede continuar")
-
-                exit(1)
-
             try:
-                self.generate_request(prompt, size = size)
+                self.generate_request(prompt, size=size)
 
                 errors = 0
+                timeout_next_try = 0
             except Exception as e:
-                print("Ha ocurrido un error al generar la imagen")
-                print(e)
-                print("Intentando de nuevo en 3 segundos...")
                 pending_quantity += 1
                 errors += 1
-                sleep(3)
+
+                if timeout_next_try < 300:
+                    timeout_next_try += 60 # Aumento el tiempo de espera próximo intento hasta 300 segundos (5 minutos)
+
+                if self.DEBUG:
+                    print("Ha ocurrido un error al generar la imagen")
+                    print(e)
+                    print("Intentando de nuevo en {} segundos...".format(timeout_next_try))
+
+                sleep(timeout_next_try)
 
         self.is_busy = False
 

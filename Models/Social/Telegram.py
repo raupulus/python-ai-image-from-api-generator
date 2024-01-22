@@ -18,7 +18,7 @@ class Telegram:
         self.CHANNEL_ID = os.getenv("TELEGRAM_CHANNEL_ID")
         self.BOT = telegram.Bot(token=self.BOT_TOKEN)
 
-    async def publish(self, jsonInfo, path, max_images = 5, link = None):
+    async def publish(self, jsonInfo, path, max_images = 3, link = None):
 
         link = link or "https://aidyslexic.raupulus.dev"
         title_added = "\nSee More Seeds: " + link + "\n\n#StableDiffusion #ai #ArtificialIntelligence"

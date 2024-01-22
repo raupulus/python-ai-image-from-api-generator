@@ -22,14 +22,14 @@ class RoleSelector:
         self.DEBUG = os.getenv("DEBUG")
 
         self.roles_tuning = {
-            #"photographer": data_photographer.getData(),
-            #"photographer_people": data_photographer_people.getData(),
-            #"photographer_animals": data_photographer_animals.getData(),
-            #"photographer_food": data_photographer_food.getData(),
-            #"artist": data_artist.getData(),
-            #"artist_monster": data_artist_monster.getData(),
-            #"art_2d_people": data_art_2d_people.getData(),
-            #"art_3d_people": data_art_3d_people.getData(),
+            "photographer": data_photographer.getData(),
+            "photographer_people": data_photographer_people.getData(),
+            "photographer_animals": data_photographer_animals.getData(),
+            "photographer_food": data_photographer_food.getData(),
+            "artist": data_artist.getData(),
+            "artist_monster": data_artist_monster.getData(),
+            "art_2d_people": data_art_2d_people.getData(),
+            "art_3d_people": data_art_3d_people.getData(),
             "art_fantasy": data_art_fantasy.getData(),
         }
 
@@ -65,9 +65,9 @@ class RoleSelector:
             str: El role actual.
         """
 
-        self.role = list(self.roles_tuning.keys())[role]
+        self.role = role
 
-        return role
+        return self.role
 
     def get_render(self):
         """

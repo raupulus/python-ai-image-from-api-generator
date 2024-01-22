@@ -21,7 +21,7 @@ API_UPLOAD = os.getenv("API_UPLOAD")
 TWITTER_AUTO_PUBLISH = os.getenv("TWITTER_AUTO_PUBLISH")
 TELEGRAM_AUTO_PUBLISH = os.getenv("TELEGRAM_AUTO_PUBLISH")
 MASTODON_AUTO_PUBLISH = os.getenv("MASTODON_AUTO_PUBLISH")
-#INSTAGRAM_AUTO_PUBLISH = os.getenv("INSTAGRAM_AUTO_PUBLISH")
+# INSTAGRAM_AUTO_PUBLISH = os.getenv("INSTAGRAM_AUTO_PUBLISH")
 
 ## Preparo parámetros recibidos por consola
 parser = argparse.ArgumentParser(description="Tool for prompt generator and stable diffusion images creator", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -72,6 +72,24 @@ if only_prompts:
 ## Pide a la API un nuevo prompt
 promptDict = gpt.next_prompt()
 
+"""
+promptDict = {
+    "title": "Warrior night elf from world of Warcraft",
+    "description": "A 3d digital image Sylvanas Windrunner character of world of warcraft",
+    "metatags": "wow, world of warcraft, night elf, digital",
+    "prompt": "Warrior night elf from world of Warcraft woorigami a beautiful and strong purple female warrior night elf, world of warcraft, character concept art of an anime goddess of lemons | | cute - fine - face, pretty face, realistic shaded perfect face, fine details by stanley artgerm lau, wlop, rossdraws, james jean, andrei riabovitchev, marc simonetti, boris valejo, frank franzetta, and sakimichan, trending on artstation, folded, paper-made, origami , (Masterpiece:1. 3) (best quality:1. 2) (high quality:1. 1), intricate detail, vivid details, awe inspiring"
+}
+promptDict = {
+    "title": "World of warcraft elven druid",
+    "description": "fantasy, intricate, elegant, highly detailed, digital painting, artstation, concept art, smooth, sharp focus, illustration, art by artgerm and greg rutkowski",
+    "metatags": "wow, world of warcraft, night elf, digital",
+    "prompt": "world of warcraft elven druid, fantasy, intricate, elegant,highly detailed, digital painting, artstation, concept art, smooth, sharp focus, illustration, art by artgerm and greg rutkowski, wow, world of warcraft, night elf, digital"
+}
+
+role.change_role('art_3d_people')
+"""
+
+
 if not isinstance(promptDict, dict) or not promptDict['prompt']:
     print("Error al obtener el prompt")
 
@@ -97,6 +115,9 @@ elif dalle:
     seeds = []
     params = {}
     ai = "Dall-e"
+else:
+    ai = ""
+    params = {}
 
 # Separo los metatags en una lista
 metatagsList = metatags.split(",")
@@ -173,20 +194,20 @@ web_link = api_response.get('url') if api_response else None
 if TWITTER_AUTO_PUBLISH:
     print("Compartiendo imágenes en publicación de Twitter...")
     twitter = Twitter()
-    twitter.post_tweet(jsonInfo=jsonInfo, path=path, link=web_link)
+    twitter.post_tweet(jsonInfo=jsonInfo, path=path, link=web_link, max_images=3)
 
 ## Postear en Canal de Telegram
 if TELEGRAM_AUTO_PUBLISH:
     print("Compartiendo imágenes en publicación de Telegram...")
     telegram = Telegram()
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(telegram.publish(jsonInfo=jsonInfo, path=path, link=web_link))
+    loop.run_until_complete(telegram.publish(jsonInfo=jsonInfo, path=path, max_images=3, link=web_link))
 
 if MASTODON_AUTO_PUBLISH:
     print("Compartiendo imágenes en publicación de Mastodon...")
     mastodon = Mastodon()
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(mastodon.publish(jsonInfo=jsonInfo, path=path, link=web_link))
+    loop.run_until_complete(mastodon.publish(jsonInfo=jsonInfo, path=path, max_images=3, link=web_link))
 
 
 ## Postear en Instagram
